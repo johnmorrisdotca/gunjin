@@ -155,13 +155,12 @@ See [Contributing](CONTRIBUTING.md) for the project conventions and checks.
 
 ## The game family
 
-Gunjin is one of the johnmorrisdotca puzzle and board-game packages:
+Gunjin is made for [Itsutsu](https://itsutsu.com), alongside
 [Kyuubu](https://github.com/johnmorrisdotca/kyuubu),
-[Shikaku](https://github.com/johnmorrisdotca/shikaku),
-[Hitori](https://github.com/johnmorrisdotca/hitori),
-[Nurikabe](https://github.com/johnmorrisdotca/nurikabe),
-[Masyu](https://github.com/johnmorrisdotca/masyu), and
-[Yajilin](https://github.com/johnmorrisdotca/yajilin).
+[Kazu](https://github.com/johnmorrisdotca/kazu),
+[Jirai](https://github.com/johnmorrisdotca/jirai), and
+[Tobiishi](https://github.com/johnmorrisdotca/tobiishi).
+Their demos share the family stylesheet, header, footer and colour palette.
 
 ## Contribution, security, and licence
 

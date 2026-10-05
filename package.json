@@ -2,10 +2,46 @@
   "name": "@johnmorrisdotca/gunjin",
   "version": "0.1.1",
   "description": "Five hidden-rank strategy board games with immutable TypeScript engines and an English and Japanese pass-the-device player. Zero runtime dependencies.",
-  "keywords": ["board-game", "strategy-game", "hidden-information", "hidden-rank", "hotseat", "pass-and-play", "two-player-game", "capture-flag", "hasami-shogi", "luzhanqi", "salpakan", "stratego", "gunjin-shogi", "military-chess", "board-game-engine", "game-engine", "immutable-state", "typescript", "javascript", "zero-dependencies", "esm", "svg", "browser-game", "touch", "keyboard", "accessible", "english", "japanese", "i18n", "replay"],
+  "keywords": [
+    "board-game",
+    "strategy-game",
+    "hidden-information",
+    "hidden-rank",
+    "hotseat",
+    "pass-and-play",
+    "two-player-game",
+    "capture-flag",
+    "hasami-shogi",
+    "luzhanqi",
+    "salpakan",
+    "stratego",
+    "gunjin-shogi",
+    "military-chess",
+    "board-game-engine",
+    "game-engine",
+    "immutable-state",
+    "typescript",
+    "javascript",
+    "zero-dependencies",
+    "esm",
+    "svg",
+    "browser-game",
+    "touch",
+    "keyboard",
+    "accessible",
+    "english",
+    "japanese",
+    "i18n",
+    "replay"
+  ],
   "homepage": "https://github.com/johnmorrisdotca/gunjin#readme",
-  "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/gunjin.git" },
-  "bugs": { "url": "https://github.com/johnmorrisdotca/gunjin/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnmorrisdotca/gunjin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johnmorrisdotca/gunjin/issues"
+  },
   "author": "John Morris",
   "license": "MIT",
   "type": "module",
@@ -14,28 +50,77 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
-    "./hasami": { "types": "./dist/hasami.d.ts", "import": "./dist/hasami.js", "default": "./dist/hasami.js" },
-    "./luzhanqi-mini": { "types": "./dist/luzhanqi-mini.d.ts", "import": "./dist/luzhanqi-mini.js", "default": "./dist/luzhanqi-mini.js" },
-    "./salpakan": { "types": "./dist/salpakan.d.ts", "import": "./dist/salpakan.js", "default": "./dist/salpakan.js" },
-    "./stratego-lite": { "types": "./dist/stratego-lite.d.ts", "import": "./dist/stratego-lite.js", "default": "./dist/stratego-lite.js" },
-    "./gunjin-shogi": { "types": "./dist/gunjin-shogi.d.ts", "import": "./dist/gunjin-shogi.js", "default": "./dist/gunjin-shogi.js" },
-    "./trusted": { "types": "./dist/trusted.d.ts", "import": "./dist/trusted.js", "default": "./dist/trusted.js" },
-    "./views": { "types": "./dist/views.d.ts", "import": "./dist/views.js", "default": "./dist/views.js" },
-    "./draw": { "types": "./dist/draw.d.ts", "import": "./dist/draw.js", "default": "./dist/draw.js" },
-    "./play": { "types": "./dist/play.d.ts", "import": "./dist/play.js", "default": "./dist/play.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./hasami": {
+      "types": "./dist/hasami.d.ts",
+      "import": "./dist/hasami.js",
+      "default": "./dist/hasami.js"
+    },
+    "./luzhanqi-mini": {
+      "types": "./dist/luzhanqi-mini.d.ts",
+      "import": "./dist/luzhanqi-mini.js",
+      "default": "./dist/luzhanqi-mini.js"
+    },
+    "./salpakan": {
+      "types": "./dist/salpakan.d.ts",
+      "import": "./dist/salpakan.js",
+      "default": "./dist/salpakan.js"
+    },
+    "./stratego-lite": {
+      "types": "./dist/stratego-lite.d.ts",
+      "import": "./dist/stratego-lite.js",
+      "default": "./dist/stratego-lite.js"
+    },
+    "./gunjin-shogi": {
+      "types": "./dist/gunjin-shogi.d.ts",
+      "import": "./dist/gunjin-shogi.js",
+      "default": "./dist/gunjin-shogi.js"
+    },
+    "./trusted": {
+      "types": "./dist/trusted.d.ts",
+      "import": "./dist/trusted.js",
+      "default": "./dist/trusted.js"
+    },
+    "./views": {
+      "types": "./dist/views.d.ts",
+      "import": "./dist/views.js",
+      "default": "./dist/views.js"
+    },
+    "./draw": {
+      "types": "./dist/draw.d.ts",
+      "import": "./dist/draw.js",
+      "default": "./dist/draw.js"
+    },
+    "./play": {
+      "types": "./dist/play.d.ts",
+      "import": "./dist/play.js",
+      "default": "./dist/play.js"
+    }
   },
-  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
-  "engines": { "node": ">=22" },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.check.json",
     "test": "vitest run",
-    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:presentation",
     "test:package": "pnpm build && node scripts/check-package.mjs",
     "site": "pnpm build && node scripts/site.mjs",
-    "test:demo": "pnpm site && playwright test"
+    "test:demo": "pnpm site && playwright test",
+    "check:presentation": "node scripts/check-presentation.mjs",
+    "pictures": "pnpm site && node scripts/readme-pictures.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

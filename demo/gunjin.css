@@ -1,10 +1,9 @@
-:root { color-scheme: light; font-family: system-ui, sans-serif; background: #eee9dc; color: #272b26; }
 body { margin: 0; }
 main { max-width: 1120px; margin: 0 auto; padding: 1rem; }
 .intro { font-size: 1.1rem; }
-.controls { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; padding: 1rem; border-radius: 1rem; background: #f8f5eb; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; padding: 1rem; border-radius: 1rem; background: var(--surface); color: var(--ink); }
 .controls label { display: grid; gap: .3rem; font-size: .9rem; }
-.controls select, .controls button { min-height: 2.75rem; padding: .5rem .8rem; border: 1px solid #99927f; border-radius: .55rem; background: white; font: inherit; }
+.controls select, .controls button { min-height: 2.75rem; padding: .5rem .8rem; border: 1px solid #99927f; border-radius: .55rem; background: var(--page); color: var(--ink); font: inherit; }
 .controls button { background: #365843; color: white; cursor: pointer; }
 .notice { min-height: 1.5rem; }
 .panel { padding: 1rem; border-radius: 1rem; overflow-x: auto; }
@@ -15,9 +14,11 @@ main { max-width: 1120px; margin: 0 auto; padding: 1rem; }
 .gj-cell:focus-visible { outline: 3px solid #225a88; outline-offset: -4px; }
 .gj-status { font-weight: 650; }
 .gj-tools { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
-.gj-tools button, .gj-pass button { min-height: 2.75rem; padding: .5rem .85rem; border: 1px solid #827b6a; border-radius: .5rem; background: #fffdf7; color: inherit; font: inherit; cursor: pointer; }
+.gj-tools button, .gj-pass button { min-height: 2.75rem; padding: .5rem .85rem; border: 1px solid #827b6a; border-radius: .5rem; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
 .gj-tools .gj-primary, .gj-pass .gj-primary { background: #365843; color: white; }
 .gj-pass { padding: 2rem; text-align: center; }
 .gj-setup-count { margin: .65rem 0; }
 .rules { padding: 1rem; }
 @media (max-width: 560px) { main { padding: .65rem; } .controls { display: grid; grid-template-columns: 1fr 1fr; } .controls label { min-width: 0; } .panel { padding: .45rem; } }
+
+.fam-felt .gj-status, .fam-felt .gj-setup-count { color: var(--felt-ink); }
