@@ -157,6 +157,54 @@ describe("Gunjin Shogi club-rule adaptation", () => {
     expect(gunjinCombat("engineer", "mine")).toBe("attacker");
     expect(gunjinCombat("engineer", "tank")).toBe("attacker");
     expect(gunjinCombat("flag", "general")).toBe("both");
+    expect(gunjinCombat("aircraft", "mine")).toBe("attacker");
+    expect(gunjinCombat("general", "mine")).toBe("defender");
+    expect(gunjinCombat("mine", "aircraft")).toBe("defender");
+    for (const attacker of ranksAndSpecials) expect(gunjinCombat(attacker, "flag"), `${attacker} takes the flag`).toBe("attacker");
+  });
+
+  it("wins the game for the piece that captures the flag", () => {
+    for (const kind of ["general", "cavalry", "spy", "tank", "engineer", "aircraft", "flag"]) {
+      const attacker = piece("a", 0, kind, 4, 4);
+      const flag = piece("f", 1, "flag", 4, 5);
+      const result = GUNJIN_SHOGI_RULES.resolveMove(board("gunjin-shogi", 9, 9, [attacker, flag]), attacker, { x: 4, y: 5 });
+      expect(result.winner, kind).toBe(0);
+      expect(result.reason, kind).toBe("flag-won");
+      expect(result.captured.map(item => item.id), kind).toEqual(["f"]);
+      expect(result.pieces.find(item => item.id === "a"), kind).toMatchObject({ x: 4, y: 5 });
+    }
+    const second = piece("p", 1, "major", 2, 2);
+    const flag = piece("g", 0, "flag", 2, 3);
+    expect(GUNJIN_SHOGI_RULES.resolveMove(board("gunjin-shogi", 9, 9, [second, flag]), second, { x: 2, y: 3 }).winner).toBe(1);
+  });
+
+  it("removes a flag that attacks another piece with it, and wins nothing", () => {
+    const flag = piece("o", 0, "flag", 6, 6);
+    const resolution = GUNJIN_SHOGI_RULES.resolveMove(board("gunjin-shogi", 9, 9, [flag, piece("m", 1, "captain", 6, 7)]), flag, { x: 6, y: 7 });
+    expect(resolution.winner).toBeUndefined();
+    expect(resolution.pieces).toHaveLength(0);
+  });
+
+  it("lets an aircraft remove a mine, and keeps mines off the files either side of the middle in the front rank", () => {
+    const aircraft = piece("a", 0, "aircraft", 4, 4);
+    const mine = piece("m", 1, "mine", 2, 1);
+    const result = GUNJIN_SHOGI_RULES.resolveMove(board("gunjin-shogi", 9, 9, [aircraft, mine]), aircraft, { x: 2, y: 1 });
+    expect(result.captured.map(item => item.id)).toEqual(["m"]);
+    expect(result.winner).toBeUndefined();
+    const placed = GUNJIN_SHOGI_RULES.roster(0, 9, 9).map((kind, index) => ({ kind, x: index % 9, y: 5 + Math.floor(index / 9) }));
+    const withMineAt = (x: number, y: number) => {
+      const mineAt = placed.find(item => item.kind === "mine")!;
+      const target = placed.find(item => item.x === x && item.y === y)!;
+      return placed.map(item => (item === mineAt ? { ...item, kind: target.kind } : item === target ? { ...item, kind: "mine" } : item));
+    };
+    expect(GUNJIN_SHOGI_RULES.validateSetup(0, withMineAt(3, 5))).toBe(false);
+    expect(GUNJIN_SHOGI_RULES.validateSetup(0, withMineAt(5, 5))).toBe(false);
+    expect(GUNJIN_SHOGI_RULES.validateSetup(0, withMineAt(4, 5))).toBe(true);
+    expect(GUNJIN_SHOGI_RULES.validateSetup(0, withMineAt(3, 6))).toBe(true);
+    const south = GUNJIN_SHOGI_RULES.roster(1, 9, 9).map((kind, index) => ({ kind, x: index % 9, y: Math.floor(index / 9) }));
+    const southMine = south.find(item => item.kind === "mine")!;
+    const frontSquare = south.find(item => item.x === 3 && item.y === 3)!;
+    expect(GUNJIN_SHOGI_RULES.validateSetup(1, south.map(item => (item === southMine ? { ...item, kind: frontSquare.kind } : item === frontSquare ? { ...item, kind: "mine" } : item)))).toBe(false);
   });
 
   it("validates all 31 pieces in the four setup ranks and confines public history", () => {

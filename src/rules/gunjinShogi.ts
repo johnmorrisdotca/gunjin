@@ -88,7 +88,7 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   if (result === "both") return { pieces: match.pieces.filter(piece => piece.id !== attacker.id && piece.id !== defender.id), captured: [attacker, defender] };
   if (result === "defender") return { pieces: match.pieces.filter(piece => piece.id !== attacker.id), captured: [attacker] };
   const pieces = movePiece(match.pieces.filter(piece => piece.id !== defender.id), attacker, destination);
-  if (isEnemyHeadquarters(attacker.owner, destination) && !["tank", "aircraft", "engineer"].includes(attacker.kind)) {
+  if (defender.kind === "flag" || (isEnemyHeadquarters(attacker.owner, destination) && !["tank", "aircraft", "engineer"].includes(attacker.kind))) {
     return {
       pieces, captured: [defender], movedPiece: { ...attacker, ...destination },
       winner: attacker.owner, reason: "flag-won",
@@ -97,10 +97,11 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   return { pieces, captured: [defender], movedPiece: { ...attacker, ...destination } };
 }
 
-/** Resolves a club-rules Gunjin Shogi battle without mutating match state. */
+/** Resolves a club-rules Gunjin Shogi battle without mutating match state. A piece that attacks a flag takes it, and wins; a flag that attacks anything else is removed with it. */
 export function gunjinCombat(attacker: string, defender: string): "attacker" | "defender" | "both" {
+  if (defender === "flag") return "attacker";
   if (attacker === defender) return "both";
-  if (attacker === "flag" || defender === "flag") return "both";
+  if (attacker === "flag") return "both";
   if (defender === "mine") return attacker === "aircraft" || attacker === "engineer" ? "attacker" : "defender";
   if (attacker === "mine") return defender === "aircraft" || defender === "engineer" ? "defender" : "attacker";
   if (attacker === "spy") return ["general", "lieutenant-general"].includes(defender) ? "attacker" : "defender";

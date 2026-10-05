@@ -78,7 +78,7 @@ Take the flag or leave the opponent without a move.
 
 ### 🗺️ Board & Components
 
-The mode follows the documented “Shogi Club Rules” roster: one each of general, lieutenant general, spy, and flag; two each of major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, aircraft, and cavalry; three each of tank, engineer, and mine. Each player arranges all 31 pieces in their nearest four rows on a 9×9 board. The engine marks headquarters at (3,0), (5,0), (3,8), and (5,8); the source's bridge terrain is omitted.
+The mode follows the documented “Shogi Club Rules” roster: one each of general, lieutenant general, spy, and flag; two each of major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, aircraft, and cavalry; three each of tank, engineer, and mine. Each player arranges all 31 pieces in their nearest four rows on a 9×9 board, leaving five squares empty. A mine may not be placed on the files 3 and 5 (counting from 0) of the front rank of those four rows, the two squares the source marks with ×; any other piece may. The engine marks headquarters at (3,0), (5,0), (3,8), and (5,8); the source's bridge terrain is omitted.
 
 ### 🤫 Hidden Information Logic
 
@@ -86,11 +86,11 @@ Opponent identities remain hidden even after battles. Only the local player sees
 
 ### ⚔️ Movement & Combat Rules
 
-General through major move one orthogonal square; captain through second lieutenant move up to two; cavalry up to three; engineer slides through any clear distance; aircraft may attack any opposing piece; mines cannot move. Ordinary ranks resolve by the order general, lieutenant general, major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, cavalry. Spy defeats general and lieutenant general. Aircraft defeats all but the three general ranks. Tank loses to general ranks, aircraft, engineer, and mine, and defeats other pieces. Engineer defeats mine, spy, and tank. Mines defeat every other attacker. Equal types remove both. A flag loses with any opposing combatant. Entering an opposing headquarters wins unless the moving piece is a tank, aircraft, or engineer. The board layout and headquarters markings are adaptations.
+General through major move one orthogonal square; captain through second lieutenant move up to two; cavalry up to three; engineer slides through any clear distance; the aircraft moves to any empty square on the board, or attacks any opposing piece, jumping over whatever is in between; mines and only mines cannot move. Ordinary ranks resolve by the order general, lieutenant general, major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, cavalry. Spy defeats general and lieutenant general. Aircraft defeats all but the three general ranks. Tank loses to general ranks, aircraft, engineer, and mine, and defeats other pieces. Engineer defeats mine, spy, and tank. A mine defeats every attacker except an aircraft or an engineer, which remove it (the source's table says a mine "loses to aircraft and engineer, and beats all others"); the aircraft and the engineer are the only pieces that can clear a mine. Equal types remove both. A piece that attacks the flag captures it and its side wins at once, whatever the piece; a flag that attacks another piece is removed with it. Entering an opposing headquarters wins unless the moving piece is a tank, aircraft, or engineer. The board layout and headquarters markings are adaptations.
 
 ### 🏆 Victory Conditions
 
-An eligible piece that enters an opposing headquarters wins. No legal move is a loss.
+Capture the opposing flag, or enter an opposing headquarters with a piece that is not a tank, aircraft or engineer. No legal move is a loss.
 
 ## References
 
