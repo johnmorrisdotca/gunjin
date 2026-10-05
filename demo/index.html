@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gunjin · 軍人</title>
+  <meta name="description" content="Three hidden-rank capture-flag board games in English and Japanese.">
+  <link rel="stylesheet" href="family.css">
+  <link rel="stylesheet" href="gunjin.css">
+</head>
+<body>
+  <main>
+    <!--family-header-->
+    <p class="intro">Three hidden-rank capture-flag games for two people sharing one device.</p>
+    <section class="controls" aria-label="Game settings">
+      <label><span data-say="mode"></span>
+        <select id="mode">
+          <option value="hidden-hasami" data-say="modeHasami">Hidden Hasami</option>
+          <option value="luzhanqi-mini" data-say="modeLuzhanqi">Luzhanqi Mini</option>
+          <option value="salpakan" data-say="modeSalpakan">Salpakan Classic</option>
+        </select>
+      </label>
+      <label id="size-wrap"><span data-say="boardSize"></span>
+        <select id="size"><option value="9">9 × 9</option><option value="7">7 × 7</option></select>
+      </label>
+      <label><span data-say="language"></span>
+        <select id="language"><option value="en">English</option><option value="ja">日本語</option></select>
+      </label>
+      <label><span data-say="material"></span>
+        <select id="material"><option value="ivory">Ivory</option><option value="wood">Wood</option><option value="slate">Slate</option></select>
+      </label>
+      <label><span data-say="pieceStyle"></span>
+        <select id="piece-style"><option value="ink">Ink</option><option value="tiles">Tiles</option></select>
+      </label>
+      <button id="new" type="button" data-say="newMatch"></button>
+    </section>
+    <p class="notice" id="notice" role="status" aria-live="polite"></p>
+    <section class="panel fam-felt"><div id="player"></div></section>
+    <details class="rules"><summary data-say="rules"></summary><a href="rules.md" data-say="allRules"></a></details>
+    <!--family-unreviewed-->
+    <!--family-footer-->
+  </main>
+  <!--family-script-->
+  <script type="module" src="demo.js"></script>
+</body>
+</html>

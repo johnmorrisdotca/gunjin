@@ -1,0 +1,47 @@
+{
+  "name": "@johnmorrisdotca/gunjin",
+  "version": "0.1.0",
+  "description": "Hidden-rank capture-flag board games in TypeScript: Hasami-inspired bracket captures, a small land-battle game, and Salpakan-inspired officer ranks.",
+  "keywords": ["board-game", "strategy-game", "hidden-information", "capture-flag", "typescript", "zero-dependencies"],
+  "homepage": "https://github.com/johnmorrisdotca/gunjin#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/gunjin.git" },
+  "bugs": { "url": "https://github.com/johnmorrisdotca/gunjin/issues" },
+  "author": "John Morris",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
+    "./hasami": { "types": "./dist/hasami.d.ts", "import": "./dist/hasami.js", "default": "./dist/hasami.js" },
+    "./luzhanqi-mini": { "types": "./dist/luzhanqi-mini.d.ts", "import": "./dist/luzhanqi-mini.js", "default": "./dist/luzhanqi-mini.js" },
+    "./salpakan": { "types": "./dist/salpakan.d.ts", "import": "./dist/salpakan.js", "default": "./dist/salpakan.js" },
+    "./trusted": { "types": "./dist/trusted.d.ts", "import": "./dist/trusted.js", "default": "./dist/trusted.js" },
+    "./views": { "types": "./dist/views.d.ts", "import": "./dist/views.js", "default": "./dist/views.js" },
+    "./draw": { "types": "./dist/draw.d.ts", "import": "./dist/draw.js", "default": "./dist/draw.js" },
+    "./play": { "types": "./dist/play.d.ts", "import": "./dist/play.js", "default": "./dist/play.js" }
+  },
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.check.json",
+    "test": "vitest run",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "test:package": "pnpm build && node scripts/check-package.mjs",
+    "site": "pnpm build && node scripts/site.mjs",
+    "test:demo": "pnpm site && playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.63.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^5.0.0"
+  },
+  "packageManager": "pnpm@10.11.0"
+}
