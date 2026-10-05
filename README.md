@@ -1,114 +1,173 @@
-# Gunjin · 軍人
+<h1 align="center">Gunjin <sub>軍人</sub></h1>
 
-A TypeScript family of five hidden-rank strategy board games. The package has no runtime dependencies. It includes a typed game core, a hotseat browser player, Japanese and English interface strings, and safe public views for display and replay.
+<p align="center"><strong>Five hidden-rank strategy games, played face to face on one device.</strong><br>
+A typed, immutable game engine and a private pass-the-device browser player, in English and Japanese.</p>
 
-## Games
+<p align="center">
+  <a href="https://github.com/johnmorrisdotca/gunjin/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/johnmorrisdotca/gunjin/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://www.npmjs.com/package/@johnmorrisdotca/gunjin"><img alt="npm" src="https://img.shields.io/npm/v/@johnmorrisdotca/gunjin?color=2f5d4a"></a>
+  <a href="./LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-2f5d4a"></a>
+  <img alt="No runtime dependencies" src="https://img.shields.io/badge/runtime%20dependencies-0-2f5d4a">
+  <img alt="TypeScript" src="https://img.shields.io/badge/types-TypeScript-3178c6">
+</p>
 
-### Hidden Hasami
+<p align="center"><a href="https://johnmorrisdotca.github.io/gunjin/"><strong>Play the demo →</strong></a> · <a href="https://johnmorrisdotca.github.io/gunjin/api.html">API reference</a> · <a href="docs/RULES.md">Rules and adaptations</a></p>
 
-### 🗺️ Board & Components
+<p align="center">
+  <img src="docs/desktop.jpg" alt="Gunjin's desktop hotseat game and settings" width="720">
+  <img src="docs/phone.jpg" alt="Gunjin's phone layout" width="220">
+</p>
 
-A 9×9 board has nine stones per player on the home back row. A 7×7 option uses seven stones. Each side secretly assigns one leader and the remaining guards.
+Gunjin brings five hidden-rank strategy games together behind one small API:
+Hidden Hasami, Luzhanqi Mini, Salpakan Classic, Hidden Capture Flag, and
+Gunjin Shogi · Club Rules. The rules and adaptations are documented in
+[Rules](docs/RULES.md); each mode is named plainly where it differs from a
+traditional ruleset.
 
-### 🤫 Hidden Information Logic
+- **Play locally.** Two people arrange their pieces privately and pass one
+  device between turns. Opposing ranks stay hidden in the player view.
+- **Build your own interface.** Pure functions create matches, validate
+  setups and moves, and produce redacted views and public replays.
+- **Choose a look.** The browser player supports English or Japanese, three
+  board materials, and two piece styles.
+- **Use it anywhere.** Typed ES modules, no runtime dependencies, and no
+  framework requirement.
 
-Every stone moves the same way. The leader is identified only to its owner in the local hotseat setup. Opponent roles remain hidden during play and are announced only if the leader is captured. This is an original hidden-leader adaptation, not traditional Hasami Shogi.
+## A match in 30 seconds
 
-### ⚔️ Movement & Combat Rules
-
-Move any stone horizontally or vertically any clear number of empty cells. After the move, in each of the four directions, remove a contiguous enemy run bracketed by the moved stone and another friendly stone. Edge and corner contact do not count as brackets; a player may move into a sandwich without losing their own stone.
-
-### 🏆 Victory Conditions
-
-Capture the enemy leader, reduce the enemy to one stone, or leave the opponent without a legal move. Three occurrences of the same public position, including the player to move, draw the game.
-
-### Luzhanqi Mini
-
-### 🗺️ Board & Components
-
-A 7×8 board has 14 pieces per side, filling the two home rows: one commander, two officers, three soldiers, three engineers, two bombs, two mines, and one flag. Four camps are at (1,3), (5,3), (1,4), and (5,4). The two headquarters on a home back row are at x=1 and x=5; the flag starts in one.
-
-### 🤫 Hidden Information Logic
-
-Ranks stay hidden after a battle. The public record reports only captured cells, counts, and game outcomes; it never records a defeated rank. This ruleset is an original streamlined game, not a complete statement of Luzhanqi rules. Its secret roles are intended for a trusted referee or private host process.
-
-### ⚔️ Movement & Combat Rules
-
-Commander, officer, soldier, engineer, and bomb move one orthogonal square. Flags and mines cannot move. Camps cannot be attacked, though a piece may leave a camp. A flag attack wins before other combat; a bomb removes both pieces; an engineer defeats a mine, while any other attacker is removed and the mine remains. Otherwise the higher rank wins and equal ranks remove both. Mines stay in the home back row; bombs cannot be placed in the front row. This compact version has no rail movement, diagonal movement, mountains, headquarters freezing, or commander-death reveal.
-
-### 🏆 Victory Conditions
-
-Capture the flag or leave the opponent with no legal move. A flag attack ends the game immediately.
-
-### Salpakan Classic
-
-### 🗺️ Board & Components
-
-A 9×8 board has 21 pieces on each player's nearest three rows: one each of five-star, four-star, three-star, two-star, one-star, colonel, lieutenant-colonel, major, captain, first lieutenant, second lieutenant, and sergeant; six privates; two spies; and one flag.
-
-### 🤫 Hidden Information Logic
-
-Setups and piece identities stay hidden from the opponent, including after combat. The referee resolves combat privately and announces only public outcomes. This is a documented implementation of Salpakan's hidden-rank style; it is not a claim that every local variant uses identical details.
-
-### ⚔️ Movement & Combat Rules
-
-Every piece, including the flag, moves one orthogonal square. Higher officers defeat lower officers and privates. A spy defeats any officer and the flag; a private defeats a spy. Equal pieces, including two spies, remove each other. A flag loses to every attacker except an attacking flag, which captures it. A flag reaching the opposing back row must survive one full enemy turn; capture is checked before that claim is awarded. Resignation loses; an agreed draw is a draw. This implementation treats a player with no legal move as losing.
-
-### 🏆 Victory Conditions
-
-Capture the opposing flag, or move your own flag to the opposing back row and keep it there through the opponent's reply turn. Resignation loses; an agreed draw ends the game.
-
-### Hidden Capture Flag
-
-### 🗺️ Board & Components
-
-A 10×10 board uses the 40-piece roster and central lake squares from Stratego Original: marshal, general, two colonels, three majors, four captains, four lieutenants, four sergeants, five miners, eight scouts, one spy, six bombs, and one flag. Each side fills its four home rows.
-
-### 🤫 Hidden Information Logic
-
-Ranks are private during setup and play. Each battle publicly records both combatant ranks, as in the cited rule manual. Rank reveals remain in public match history; a player's current view still redacts opposing pieces on the board.
-
-### ⚔️ Movement & Combat Rules
-
-Mobile pieces move one orthogonal square; scouts slide through any number of clear cells in a straight line. Lakes cannot be entered or crossed. Bombs and flags do not move. Higher rank wins, equal ranks remove both, a miner defeats a bomb, and a spy defeats a marshal only when attacking. This ruleset omits the manual's repeated-two-square and pursuit restrictions; it uses an original neutral title and no copied game art.
-
-### 🏆 Victory Conditions
-
-Capture the opposing flag or leave the opponent without a legal move. A scout can capture a flag at range when the path is clear.
-
-### Gunjin Shogi · Club Rules Adaptation
-
-### 🗺️ Board & Components
-
-A plain 9×9 board uses the 31-piece roster documented for “Shogi Club Rules”: one general, one lieutenant general, two major generals, two colonels, two lieutenant colonels, two majors, two captains, two lieutenants, two second lieutenants, two aircraft, three tanks, two cavalry, three engineers, one spy, three mines, and one flag. Pieces are placed in the nearest four rows. Four marked headquarters are at (3,0), (5,0), (3,8), and (5,8).
-
-### 🤫 Hidden Information Logic
-
-The hotseat setup hides the board while the device changes hands. Opposing identities remain hidden after combat; public history contains only locations, capture counts, and outcomes. The mode follows the roster and combat table of the published Shogi Club rules while adapting its board to a plain 9×9 grid.
-
-### ⚔️ Movement & Combat Rules
-
-Generals and officers through major move one orthogonal square; captains, lieutenants, and second lieutenants move up to two clear squares; cavalry moves up to three; engineers slide any clear distance; aircraft may attack any opposing piece directly; mines cannot move. Ordinary rank order runs from general down through cavalry. Spy defeats general or lieutenant general; aircraft defeats all except the three general ranks; tank defeats ranks below major general but loses to general ranks, aircraft, engineer, and mine; engineer defeats mine, spy, and tank; mine defeats every other attacker. Equal kinds remove both pieces. A flag entering combat is removed with its opponent. Occupying an opposing headquarters wins unless the moving piece is a tank, aircraft, or engineer. This adaptation omits the source board's bridge-specific movement and uses a plainly marked headquarters layout.
-
-### 🏆 Victory Conditions
-
-Occupy an opposing headquarters with an eligible surviving piece. A player without a legal move loses.
-
-## Information boundaries
-
-`PlayerView`, `PublicPosition`, and public replay records omit hidden enemy roles and piece IDs. Capture Flag battles intentionally add both publicly revealed combat ranks to history. The SVG renderer accepts only `PlayerView`, so unexposed enemy ranks do not enter its labels, data attributes, or glyphs. The browser player is for passing one device between players; someone with access to the same browser process can inspect its memory. For private online play, keep the authoritative state on a trusted host and send each player only their redacted `PlayerView`. `./trusted` deliberately contains role-bearing serialization and is for trusted host storage only.
-
-## Use
+```sh
+npm install @johnmorrisdotca/gunjin
+```
 
 ```ts
 import { createHasamiMatch, hasamiRoster } from "@johnmorrisdotca/gunjin/hasami";
-import { mountGunjin } from "@johnmorrisdotca/gunjin/play";
 import { viewForPlayer } from "@johnmorrisdotca/gunjin/views";
 
 const match = createHasamiMatch({ width: 7, height: 7 });
-console.log(hasamiRoster(7));
-// Submit each player's setup with submitSetup from @johnmorrisdotca/gunjin/trusted.
-// Mount the authoritative state only in the local hotseat interface.
+console.log(hasamiRoster(7)); // one leader and six guards
+console.log(viewForPlayer(match, 0).phase); // "setup"
 ```
 
-Mode engine entry points (`/hasami`, `/luzhanqi-mini`, `/salpakan`, `/stratego-lite`, `/gunjin-shogi`) return full authoritative matches for a trusted host. The root entry point exports redacted views, rendering, replay, and browser player APIs. See [API](docs/API.md), [rules](docs/RULES.md), and [the browser demo](https://johnmorrisdotca.github.io/gunjin/).
+A complete setup is submitted through the trusted mode entry point, one
+player at a time. The browser player takes an authoritative match and handles
+private setup, device handoff, play, and public replay download:
+
+```ts
+import { createHasamiMatch } from "@johnmorrisdotca/gunjin/hasami";
+import { mountGunjin } from "@johnmorrisdotca/gunjin/play";
+
+const match = createHasamiMatch({ width: 7, height: 7 });
+const game = mountGunjin(document.querySelector("#game")!, match, {
+  language: "en",
+  material: "wood",
+  pieceStyle: "tiles",
+});
+// Call game.destroy() when the page removes the game.
+```
+
+The container should have a width and a positioned layout. For a working
+match, each side must submit a valid roster before play begins. The
+[demo](https://johnmorrisdotca.github.io/gunjin/) shows the full flow.
+
+## Who it is for
+
+- **Board-game projects** that need rules and validation separate from the UI.
+- **Local game nights** that want a private setup and handoff on one screen.
+- **Teachers and clubs** comparing five related hidden-rank rule adaptations.
+- **Web developers** who want an SVG renderer or a small typed engine without
+  adopting a UI framework.
+
+## Entry points
+
+| Import | Use |
+| --- | --- |
+| `@johnmorrisdotca/gunjin` | Redacted views, public replay, shared types, drawing and styling exports |
+| `@johnmorrisdotca/gunjin/hasami` | Hidden Hasami match creation, roster, setup and moves |
+| `@johnmorrisdotca/gunjin/luzhanqi-mini` | Luzhanqi Mini match creation, roster, setup and moves |
+| `@johnmorrisdotca/gunjin/salpakan` | Salpakan Classic match creation, roster, setup and moves |
+| `@johnmorrisdotca/gunjin/stratego-lite` | Hidden Capture Flag rules and engine functions |
+| `@johnmorrisdotca/gunjin/gunjin-shogi` | Gunjin Shogi rules and engine functions |
+| `@johnmorrisdotca/gunjin/trusted` | Generic engine, setup, turns, and full-match serialization for trusted host code |
+| `@johnmorrisdotca/gunjin/views` | Player and spectator redaction, legal move coordinates, board features |
+| `@johnmorrisdotca/gunjin/draw` | SVG board drawing |
+| `@johnmorrisdotca/gunjin/play` | Pass-the-device browser player |
+
+The five rulesets and their adaptations are described in
+[docs/RULES.md](docs/RULES.md). Signatures and types are listed in the
+[API reference](https://johnmorrisdotca.github.io/gunjin/api.html) and
+[docs/API.md](docs/API.md).
+
+## API at a glance
+
+| Function | Purpose |
+| --- | --- |
+| `createHasamiMatch(size?)`, `createLuzhanqiMiniMatch()`, `createSalpakanMatch()` | Create mode-specific matches |
+| `createMatch(mode, size?)` | Create any supported match from the trusted entry point |
+| `rosterForSetup(match, player)` and mode roster functions | Read the current player's piece roster |
+| `submitSetup(match, player, placements, expectedSetupStep)` | Validate and submit a private setup immutably |
+| `playMove(match, player, { from, to, expectedTurn })` | Validate and apply a move immutably |
+| `viewForPlayer(match, player)`, `publicPosition(match)` | Return role-redacted views |
+| `publicReplay(match)`, `encodePublicReplay(match)`, `decodePublicReplay(json)` | Create, encode, and validate role-safe replay records |
+| `drawGunjinBoard(view, options?)`, `mountGunjin(element, match, options?)` | Draw SVG or mount the local player |
+
+Calls that make or change a full match belong in trusted host code. Never
+send a full `AuthoritativeMatch` or trusted serialization to an opponent.
+The local browser player is intended for casual, same-device hotseat play;
+a person with access to the browser process can inspect its memory.
+
+## Player options and appearance
+
+`mountGunjin(element, match, options?)` accepts:
+
+| Option | Values | Purpose |
+| --- | --- | --- |
+| `language` | `"en"`, `"ja"` | Interface language |
+| `material` | `"ivory"`, `"wood"`, `"slate"` | Board palette |
+| `pieceStyle` | `"ink"`, `"tiles"` | Circular or square piece marks |
+| `onChange` | `(position: PublicPosition) => void` | Receive redacted public position updates |
+| `onFinish` | `(result: { winner: Player \| null; reason: string }) => void` | Receive a finished result |
+
+The returned handle provides `view()`, `replay()`, `set(options)`, and
+`destroy()`. `drawGunjinBoard(view, options?)` returns SVG text and accepts
+`language`, `material`, `pieceStyle`, `selected`, `targets`, and setup `draft`
+options. See [docs/API.md](docs/API.md) for the typed details.
+
+## Limits and information boundaries
+
+The browser player is local hotseat, not an online service. Trusted engine
+matches contain both sides' hidden ranks; `PlayerView`, `PublicPosition`, and
+public replay records redact roles according to each ruleset. Capture Flag
+battle history intentionally reveals both combat ranks. The trusted
+serialization is for private host storage, not encrypted storage or a
+network protocol. This package provides no matchmaking, account system, or
+remote transport.
+
+## Development
+
+```sh
+pnpm install
+pnpm check
+pnpm build
+pnpm site
+```
+
+See [Contributing](CONTRIBUTING.md) for the project conventions and checks.
+
+## The game family
+
+Gunjin is one of the johnmorrisdotca puzzle and board-game packages:
+[Kyuubu](https://github.com/johnmorrisdotca/kyuubu),
+[Shikaku](https://github.com/johnmorrisdotca/shikaku),
+[Hitori](https://github.com/johnmorrisdotca/hitori),
+[Nurikabe](https://github.com/johnmorrisdotca/nurikabe),
+[Masyu](https://github.com/johnmorrisdotca/masyu), and
+[Yajilin](https://github.com/johnmorrisdotca/yajilin).
+
+## Contribution, security, and licence
+
+Bug reports and contributions are welcome. Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). To report a security concern privately,
+follow [SECURITY.md](SECURITY.md).
+
+Gunjin is released under the [MIT licence](LICENSE).

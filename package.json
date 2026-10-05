@@ -1,8 +1,8 @@
 {
   "name": "@johnmorrisdotca/gunjin",
-  "version": "0.1.0",
-  "description": "Five hidden-rank strategy board games in TypeScript, with immutable engines and a private-device player.",
-  "keywords": ["board-game", "strategy-game", "hidden-information", "capture-flag", "typescript", "zero-dependencies"],
+  "version": "0.1.1",
+  "description": "Five hidden-rank strategy board games with immutable TypeScript engines and an English and Japanese pass-the-device player. Zero runtime dependencies.",
+  "keywords": ["board-game", "strategy-game", "hidden-information", "hidden-rank", "hotseat", "pass-and-play", "two-player-game", "capture-flag", "hasami-shogi", "luzhanqi", "salpakan", "stratego", "gunjin-shogi", "military-chess", "board-game-engine", "game-engine", "immutable-state", "typescript", "javascript", "zero-dependencies", "esm", "svg", "browser-game", "touch", "keyboard", "accessible", "english", "japanese", "i18n", "replay"],
   "homepage": "https://github.com/johnmorrisdotca/gunjin#readme",
   "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/gunjin.git" },
   "bugs": { "url": "https://github.com/johnmorrisdotca/gunjin/issues" },
