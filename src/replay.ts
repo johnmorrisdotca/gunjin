@@ -24,6 +24,7 @@ export function publicReplay(match: AuthoritativeMatch): PublicReplay {
   };
 }
 
+/** Serializes the role-free public replay record as JSON. */
 export function encodePublicReplay(match: AuthoritativeMatch): string {
   return JSON.stringify(publicReplay(match));
 }

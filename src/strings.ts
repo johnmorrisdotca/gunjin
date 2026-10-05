@@ -1,9 +1,13 @@
 import type { GameMode, Player } from "./types.ts";
 
+/** Supported interface locales. */
 export type Language = "en" | "ja";
+/** Board palettes shared with the game family. */
 export type Material = "ivory" | "wood" | "slate";
+/** Available piece silhouettes. */
 export type PieceStyle = "ink" | "tiles";
 
+/** English and Japanese interface labels used by the renderer and player. */
 export const STRINGS = {
   en: {
     title: "Gunjin",
@@ -117,18 +121,22 @@ export const STRINGS = {
   },
 } as const;
 
+/** Returns the localized interface string table. */
 export function words(language: Language = "en") {
   return STRINGS[language];
 }
 
+/** Returns the localized name for one side. */
 export function playerName(language: Language, player: Player): string {
   return words(language)[player === 0 ? "red" : "blue"];
 }
 
+/** Returns the localized display name for a ruleset. */
 export function modeName(language: Language, mode: GameMode): string {
   return words(language).modeNames[mode];
 }
 
+/** Returns a localized piece label, with a readable fallback for unknown roles. */
 export function roleName(language: Language, role: string): string {
   if (language === "ja") {
     const ja: Record<string, string> = {

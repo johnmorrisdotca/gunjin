@@ -8,6 +8,7 @@ export function createHasamiMatch(size: SetupSize = {}): ReturnType<typeof creat
   return createMatch("hidden-hasami", size);
 }
 
+/** Submits one player's complete setup; the expected step rejects stale submissions. */
 export function submitHasamiSetup(
   match: ReturnType<typeof createMatch>,
   player: Player,
@@ -18,6 +19,7 @@ export function submitHasamiSetup(
   return submitSetup(match, player, placements, expectedSetupStep);
 }
 
+/** Applies a legal move action to a Hasami match, rejecting stale turns. */
 export function playHasamiMove(
   match: ReturnType<typeof createMatch>,
   player: Player,
@@ -27,6 +29,7 @@ export function playHasamiMove(
   return playMove(match, player, action);
 }
 
+/** Returns the ordered private setup roster for the selected square board size. */
 export function hasamiRoster(size: 7 | 9): readonly string[] {
   return HIDDEN_HASAMI_RULES.roster(0, size, size);
 }

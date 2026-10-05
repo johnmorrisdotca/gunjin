@@ -1,6 +1,8 @@
 import type { AuthoritativeMatch, Coordinate, MatchResult, Piece, Player } from "../types.ts";
 
+/** Role-bearing placement submitted privately during a player's setup. */
 export type SetupPiece = Coordinate & { kind: string };
+/** Result of resolving a legal move, including any public battle disclosure. */
 export type MoveResolution = {
   pieces: readonly Piece[];
   captured: readonly Piece[];
@@ -12,6 +14,7 @@ export type MoveResolution = {
   clearPendingFlag?: boolean;
 };
 
+/** Rule callbacks and board limits implemented by one game mode. */
 export type ModeRules = {
   mode: AuthoritativeMatch["mode"];
   defaultWidth: number;

@@ -101,6 +101,7 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   };
 }
 
+/** Resolves a Capture Flag battle without mutating either piece or match. */
 export function strategoCombat(attacker: string, defender: string): "attacker" | "defender" | "both" {
   if (defender === "flag") return "attacker";
   if (attacker === "flag") return "defender";

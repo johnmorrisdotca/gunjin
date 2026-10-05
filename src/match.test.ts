@@ -1,12 +1,43 @@
 import { describe, expect, it } from "vitest";
-import { acknowledgePass, createMatch, offerDraw, playMove, submitSetup } from "./match.ts";
+import { acknowledgePass, createMatch, offerDraw, playMove, rosterForSetup, submitSetup } from "./match.ts";
 import { publicPositionKey } from "./rules/board.ts";
 import { viewForPlayer, publicPosition } from "./views.ts";
 import { drawGunjinBoard } from "./draw.ts";
 import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
+import { decodeTrustedMatch, encodeTrustedMatch } from "./trusted.ts";
 import type { AuthoritativeMatch } from "./types.ts";
 
 describe("match handoff and public information", () => {
+  it("round-trips trusted setup and play states for both newer modes", () => {
+    for (const mode of ["stratego-lite", "gunjin-shogi"] as const) {
+      let match = createMatch(mode);
+      expect(decodeTrustedMatch(encodeTrustedMatch(match))).toEqual(match);
+
+      const makeSetup = (player: 0 | 1) => {
+        const rows = mode === "stratego-lite"
+          ? (player === 0 ? [6, 7, 8, 9] : [0, 1, 2, 3])
+          : (player === 0 ? [5, 6, 7, 8] : [0, 1, 2, 3]);
+        const placements: { x: number; y: number; kind: string }[] = [];
+        for (const kind of rosterForSetup(match, player)) {
+          const cell = rows.flatMap(y => Array.from({ length: match.width }, (_, x) => ({ x, y })))
+            .find(({ x, y }) => !placements.some(piece => piece.x === x && piece.y === y) &&
+              !(mode === "gunjin-shogi" && kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${x}:${y}`)));
+          if (!cell) throw new Error("The test setup has no remaining home cell");
+          placements.push({ ...cell, kind });
+        }
+        return placements;
+      };
+
+      match = submitSetup(match, 0, makeSetup(0), match.setupStep);
+      expect(decodeTrustedMatch(encodeTrustedMatch(match))).toEqual(match);
+      match = acknowledgePass(match, 1, match.turn);
+      match = submitSetup(match, 1, makeSetup(1), match.setupStep);
+      match = acknowledgePass(match, 0, match.turn);
+      expect(match.phase).toBe("play");
+      expect(decodeTrustedMatch(encodeTrustedMatch(match))).toEqual(match);
+    }
+  });
+
   it("hides both board and private setup during handoff, then redacts enemy ranks", () => {
     let match = createMatch("hidden-hasami", { width: 7, height: 7 });
     const setup = (leaderX: number) => [

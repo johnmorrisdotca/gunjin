@@ -19,6 +19,7 @@ import type { AuthoritativeMatch, Coordinate, Player, PublicPosition } from "./t
 import type { SetupPiece } from "./rules/types.ts";
 import type { Language, Material, PieceStyle } from "./strings.ts";
 
+/** Locale, materials, and safe public callbacks for a mounted hotseat player. */
 export type MountOptions = {
   language?: Language;
   material?: Material;
@@ -27,6 +28,7 @@ export type MountOptions = {
   onFinish?: (result: { winner: Player | null; reason: string }) => void;
 };
 
+/** Public controls returned by {@link mountGunjin}; no authoritative state is exposed. */
 export type GunjinMount = {
   view: () => ReturnType<typeof viewForPlayer>;
   replay: () => string;

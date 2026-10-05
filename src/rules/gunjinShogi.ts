@@ -97,6 +97,7 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   return { pieces, captured: [defender], movedPiece: { ...attacker, ...destination } };
 }
 
+/** Resolves a club-rules Gunjin Shogi battle without mutating match state. */
 export function gunjinCombat(attacker: string, defender: string): "attacker" | "defender" | "both" {
   if (attacker === defender) return "both";
   if (attacker === "flag" || defender === "flag") return "both";

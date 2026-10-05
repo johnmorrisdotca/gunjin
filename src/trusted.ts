@@ -45,7 +45,8 @@ function isMatch(value: unknown): value is AuthoritativeMatch {
 }
 
 function isMode(mode: unknown): mode is GameMode {
-  return mode === "hidden-hasami" || mode === "luzhanqi-mini" || mode === "salpakan";
+  return mode === "hidden-hasami" || mode === "luzhanqi-mini" || mode === "salpakan" ||
+    mode === "stratego-lite" || mode === "gunjin-shogi";
 }
 
 function isPiece(value: unknown, match: AuthoritativeMatch): value is Piece {

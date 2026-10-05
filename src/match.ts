@@ -224,6 +224,7 @@ export function offerDraw(
   };
 }
 
+/** Accepts the other player's pending draw offer using the current turn token. */
 export function acceptDraw(
   match: AuthoritativeMatch,
   player: Player,

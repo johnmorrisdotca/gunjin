@@ -8,10 +8,12 @@ export function createSalpakanMatch() {
   return createMatch("salpakan");
 }
 
+/** Returns the ordered 21-piece setup roster for one side. */
 export function salpakanRoster(): readonly string[] {
   return SALPAKAN_RULES.roster(0, 9, 8);
 }
 
+/** Submits a complete side setup and advances the hotseat setup phase. */
 export function submitSalpakanSetup(
   match: ReturnType<typeof createMatch>,
   player: Player,
@@ -22,6 +24,7 @@ export function submitSalpakanSetup(
   return submitSetup(match, player, placements, expectedSetupStep);
 }
 
+/** Applies a legal move action, rejecting stale turn numbers. */
 export function playSalpakanMove(
   match: ReturnType<typeof createMatch>,
   player: Player,

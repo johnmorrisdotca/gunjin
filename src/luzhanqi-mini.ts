@@ -8,10 +8,12 @@ export function createLuzhanqiMiniMatch() {
   return createMatch("luzhanqi-mini");
 }
 
+/** Returns the ordered 14-piece setup roster for one side. */
 export function luzhanqiMiniRoster(): readonly string[] {
   return LUZHANQI_MINI_RULES.roster(0, 7, 8);
 }
 
+/** Submits a complete side setup and advances the hotseat setup phase. */
 export function submitLuzhanqiMiniSetup(
   match: ReturnType<typeof createMatch>,
   player: Player,
@@ -22,6 +24,7 @@ export function submitLuzhanqiMiniSetup(
   return submitSetup(match, player, placements, expectedSetupStep);
 }
 
+/** Applies a legal move action, rejecting stale turn numbers. */
 export function playLuzhanqiMiniMove(
   match: ReturnType<typeof createMatch>,
   player: Player,

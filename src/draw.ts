@@ -4,6 +4,7 @@ import type { Coordinate, PlayerView } from "./types.ts";
 import type { Language, Material, PieceStyle } from "./strings.ts";
 import type { SetupPiece } from "./rules/types.ts";
 
+/** Visual settings and temporary selection marks for the role-redacted SVG renderer. */
 export type DrawOptions = {
   language?: Language;
   material?: Material;
