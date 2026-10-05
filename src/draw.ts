@@ -102,6 +102,9 @@ function roleGlyph(kind: string, language: Language): string {
     "two-star": "2★", "one-star": "1★", colonel: "Co", "lieutenant-colonel": "LtC",
     major: "Maj", captain: "Cap", "first-lieutenant": "1L", "second-lieutenant": "2L",
     sergeant: "Sgt",
+    marshal: "Ma", general: "Ge", miner: "Mi",
+    lieutenant: "Lt", "lieutenant-general": "LGen", "major-general": "MGen",
+    aircraft: "Air", tank: "T", cavalry: "Cav",
   };
   if (language === "ja") return glyphs[kind] ?? "駒";
   return glyphs[kind] ?? roleName(language, kind).slice(0, 2);

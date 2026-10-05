@@ -1,7 +1,7 @@
 import type { AuthoritativeMatch, MatchResult, PublicReplay, PublicEvent } from "./types.ts";
 import { MODE_RULES } from "./rules/index.ts";
 
-/** Creates a role-free replay record suitable for sharing or public storage. */
+/** Creates a public replay with only combat ranks that the selected rules expose. */
 export function publicReplay(match: AuthoritativeMatch): PublicReplay {
   return {
     version: 1,
@@ -15,6 +15,9 @@ export function publicReplay(match: AuthoritativeMatch): PublicReplay {
       to: event.to ? { ...event.to } : undefined,
       capturedCells: event.capturedCells.map(cell => ({ ...cell })),
       capturedCount: event.capturedCount,
+      revealed: match.mode === "stratego-lite"
+        ? event.revealed?.map(piece => ({ ...piece }))
+        : undefined,
       outcome: event.outcome ? { ...event.outcome } : undefined,
     })),
     result: match.result ? { ...match.result } : undefined,
@@ -32,7 +35,7 @@ export function decodePublicReplay(code: string): PublicReplay | null {
     const value = JSON.parse(code) as PublicReplay;
     if (
       value.version !== 1 ||
-      !["hidden-hasami", "luzhanqi-mini", "salpakan"].includes(value.mode) ||
+      !["hidden-hasami", "luzhanqi-mini", "salpakan", "stratego-lite", "gunjin-shogi"].includes(value.mode) ||
       !Number.isInteger(value.width) ||
       !Number.isInteger(value.height) ||
       value.width < 1 ||
@@ -66,6 +69,11 @@ export function decodePublicReplay(code: string): PublicReplay | null {
         to: { x: event.to.x, y: event.to.y },
         capturedCells: event.capturedCells.map((cell: { x: number; y: number }) => ({ x: cell.x, y: cell.y })),
         capturedCount: event.capturedCount,
+        revealed: value.mode === "stratego-lite" && Array.isArray((event as { revealed?: unknown }).revealed)
+          ? ((event as { revealed?: unknown }).revealed as unknown[])
+            .filter(isRevealedRank)
+            .map(({ owner, kind }) => ({ owner, kind }))
+          : undefined,
         outcome: event.outcome && isResult(event.outcome)
           ? { winner: event.outcome.winner, reason: event.outcome.reason }
           : undefined,
@@ -85,6 +93,12 @@ export function decodePublicReplay(code: string): PublicReplay | null {
   } catch {
     return null;
   }
+}
+
+function isRevealedRank(value: unknown): value is { owner: 0 | 1; kind: string } {
+  if (!value || typeof value !== "object") return false;
+  const record = value as { owner?: unknown; kind?: unknown };
+  return (record.owner === 0 || record.owner === 1) && typeof record.kind === "string";
 }
 
 function isCoordinate(value: unknown, width: number, height: number): value is { x: number; y: number } {

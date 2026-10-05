@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/gunjin",
   "version": "0.1.0",
-  "description": "Hidden-rank capture-flag board games in TypeScript: Hasami-inspired bracket captures, a small land-battle game, and Salpakan-inspired officer ranks.",
+  "description": "Five hidden-rank strategy board games in TypeScript, with immutable engines and a private-device player.",
   "keywords": ["board-game", "strategy-game", "hidden-information", "capture-flag", "typescript", "zero-dependencies"],
   "homepage": "https://github.com/johnmorrisdotca/gunjin#readme",
   "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/gunjin.git" },
@@ -18,6 +18,8 @@
     "./hasami": { "types": "./dist/hasami.d.ts", "import": "./dist/hasami.js", "default": "./dist/hasami.js" },
     "./luzhanqi-mini": { "types": "./dist/luzhanqi-mini.d.ts", "import": "./dist/luzhanqi-mini.js", "default": "./dist/luzhanqi-mini.js" },
     "./salpakan": { "types": "./dist/salpakan.d.ts", "import": "./dist/salpakan.js", "default": "./dist/salpakan.js" },
+    "./stratego-lite": { "types": "./dist/stratego-lite.d.ts", "import": "./dist/stratego-lite.js", "default": "./dist/stratego-lite.js" },
+    "./gunjin-shogi": { "types": "./dist/gunjin-shogi.d.ts", "import": "./dist/gunjin-shogi.js", "default": "./dist/gunjin-shogi.js" },
     "./trusted": { "types": "./dist/trusted.d.ts", "import": "./dist/trusted.js", "default": "./dist/trusted.js" },
     "./views": { "types": "./dist/views.d.ts", "import": "./dist/views.js", "default": "./dist/views.js" },
     "./draw": { "types": "./dist/draw.d.ts", "import": "./dist/draw.js", "default": "./dist/draw.js" },

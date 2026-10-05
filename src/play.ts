@@ -185,7 +185,9 @@ export function mountGunjin(
 
   const renderPlay = (view: ReturnType<typeof viewForPlayer>) => {
     const w = words(language());
-    status.textContent = match.result ? resultText(match.result.winner, match.result.reason) : message || w.turn;
+    status.textContent = match.result
+      ? resultText(match.result.winner, match.result.reason)
+      : message || (match.mode === "stratego-lite" ? w.captureFlagTurn : w.turn);
     board.className = "gj-board";
     board.style.aspectRatio = `${match.width}/${match.height}`;
     board.style.setProperty("--gj-width", String(match.width));
@@ -208,6 +210,26 @@ export function mountGunjin(
       button.addEventListener("click", () => chooseCell(Number(button.dataset.cell)));
     });
     board.append(cells);
+
+    if (match.mode === "stratego-lite") {
+      const battles = view.publicLog.filter(event => event.revealed?.length === 2).slice(-8);
+      if (battles.length > 0) {
+        const history = document.createElement("section");
+        history.className = "gj-battle-history";
+        history.setAttribute("aria-label", w.battleHistory);
+        const heading = document.createElement("h2");
+        heading.textContent = w.battleHistory;
+        const list = document.createElement("ol");
+        for (const event of battles) {
+          const [attacker, defender] = event.revealed!;
+          const item = document.createElement("li");
+          item.textContent = `${w.battle} ${event.turn}: ${playerName(language(), attacker!.owner)} ${roleName(language(), attacker!.kind)} · ${playerName(language(), defender!.owner)} ${roleName(language(), defender!.kind)}`;
+          list.append(item);
+        }
+        history.append(heading, list);
+        root.insertBefore(history, tools);
+      }
+    }
 
     if (match.result) {
       button(w.newMatch, () => document.defaultView?.location.reload(), true);
@@ -345,6 +367,14 @@ export function mountGunjin(
     }
     if (state.mode === "salpakan") {
       return state.currentPlayer === 0 ? cell.y >= 5 : cell.y <= 2;
+    }
+    if (state.mode === "gunjin-shogi") {
+      const homeRows = state.currentPlayer === 0 ? [5, 6, 7, 8] : [0, 1, 2, 3];
+      return homeRows.includes(cell.y) && !(kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${cell.x}:${cell.y}`));
+    }
+    if (state.mode === "stratego-lite") {
+      const homeRows = state.currentPlayer === 0 ? [6, 7, 8, 9] : [0, 1, 2, 3];
+      return homeRows.includes(cell.y);
     }
     const homeRow = state.currentPlayer === 0 ? 7 : 0;
     const frontRow = state.currentPlayer === 0 ? 6 : 1;

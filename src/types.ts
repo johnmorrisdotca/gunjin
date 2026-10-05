@@ -1,6 +1,6 @@
 /** The player whose private side is red. */
 export type Player = 0 | 1;
-export type GameMode = "hidden-hasami" | "luzhanqi-mini" | "salpakan";
+export type GameMode = "hidden-hasami" | "luzhanqi-mini" | "salpakan" | "stratego-lite" | "gunjin-shogi";
 export type Coordinate = { x: number; y: number };
 
 /** Authoritative role-bearing piece. Keep this type and full match state on a trusted host. */
@@ -24,6 +24,7 @@ export type PublicEvent = {
   to?: Coordinate;
   capturedCells: readonly Coordinate[];
   capturedCount: number;
+  revealed?: readonly { owner: Player; kind: string }[];
   outcome?: MatchResult;
 };
 

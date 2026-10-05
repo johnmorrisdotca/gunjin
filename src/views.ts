@@ -42,6 +42,9 @@ export function viewForPlayer(
       to: event.to ? { x: event.to.x, y: event.to.y } : undefined,
       capturedCells: event.capturedCells.map(cell => ({ x: cell.x, y: cell.y })),
       capturedCount: event.capturedCount,
+      revealed: match.mode === "stratego-lite"
+        ? event.revealed?.map(piece => ({ ...piece }))
+        : undefined,
       outcome: event.outcome ? safeResult(event.outcome) : undefined,
     })),
     result: match.result ? safeResult(match.result) : undefined,
@@ -89,6 +92,9 @@ export function boardFeatures(
   width: number,
   height: number,
 ): { camps: Coordinate[]; headquarters: Coordinate[] } {
+  if (mode === "gunjin-shogi") {
+    return { camps: [], headquarters: [{ x: 3, y: 0 }, { x: 5, y: 0 }, { x: 3, y: 8 }, { x: 5, y: 8 }] };
+  }
   if (mode !== "luzhanqi-mini") return { camps: [], headquarters: [] };
   const camps: Coordinate[] = [];
   const headquarters: Coordinate[] = [];

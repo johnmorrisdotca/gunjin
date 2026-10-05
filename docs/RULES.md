@@ -56,8 +56,46 @@ Every piece moves one orthogonal step, including the flag. Higher officers defea
 
 Capture the opposing flag or complete the flag-advance claim. Resignation loses; mutually agreed draw ends the game.
 
+## Hidden Capture Flag
+
+### 🗺️ Board & Components
+
+The 10×10 board has the four central 2×2 lake regions at files 2–3 and 6–7, ranks 4–5. Each side uses the 40-piece Stratego Original roster: marshal 1, general 1, colonel 2, major 3, captain 4, lieutenant 4, sergeant 4, miner 5, scout 8, spy 1, bomb 6, flag 1.
+
+### 🤫 Hidden Information Logic
+
+Players arrange their own four rows in private. A battle reveals both participating ranks in the public event history. Remaining opposing ranks stay hidden in player views.
+
+### ⚔️ Movement & Combat Rules
+
+Pieces other than scout move one orthogonal square; scouts travel any clear orthogonal distance. No piece may enter or pass over a lake. Bombs and flags are immobile. A higher numbered rank defeats a lower one, equal ranks remove both, a miner removes a bomb, and a spy defeats a marshal only on attack. A bomb defeats every attacker except a miner. This package omits the manual's repeated-two-square and pursuit restrictions.
+
+### 🏆 Victory Conditions
+
+Take the flag or leave the opponent without a move.
+
+## Gunjin Shogi · Shogi Club Rules Adaptation
+
+### 🗺️ Board & Components
+
+The mode follows the documented “Shogi Club Rules” roster: one each of general, lieutenant general, spy, and flag; two each of major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, aircraft, and cavalry; three each of tank, engineer, and mine. Each player arranges all 31 pieces in their nearest four rows on a 9×9 board. The engine marks headquarters at (3,0), (5,0), (3,8), and (5,8); the source's bridge terrain is omitted.
+
+### 🤫 Hidden Information Logic
+
+Opponent identities remain hidden even after battles. Only the local player sees their ranks during setup. Public logs do not identify combatants.
+
+### ⚔️ Movement & Combat Rules
+
+General through major move one orthogonal square; captain through second lieutenant move up to two; cavalry up to three; engineer slides through any clear distance; aircraft may attack any opposing piece; mines cannot move. Ordinary ranks resolve by the order general, lieutenant general, major general, colonel, lieutenant colonel, major, captain, lieutenant, second lieutenant, cavalry. Spy defeats general and lieutenant general. Aircraft defeats all but the three general ranks. Tank loses to general ranks, aircraft, engineer, and mine, and defeats other pieces. Engineer defeats mine, spy, and tank. Mines defeat every other attacker. Equal types remove both. A flag loses with any opposing combatant. Entering an opposing headquarters wins unless the moving piece is a tank, aircraft, or engineer. The board layout and headquarters markings are adaptations.
+
+### 🏆 Victory Conditions
+
+An eligible piece that enters an opposing headquarters wins. No legal move is a loss.
+
 ## References
 
 - Japan Shogi Association, [Hasami Shogi rules](https://www.shogi.or.jp/knowledge/hasami_shogi/). The hidden leader and expanded board are original adaptations.
 - [Luzhanqi rules overview](https://ancientchess.com/page/play-luzhanqi.htm). Luzhanqi Mini is a deliberately streamlined original ruleset.
 - [Salpakan rules](https://philggo.wixsite.com/home/rules). Local variations may differ; this implementation documents its decisions above.
+- Jumbo, [Stratego Travel / Original instructions](https://assets.jumboplay.com/12761_manual.pdf), pp. 5–6. The implementation omits repeated-two-square and pursuit restrictions.
+- [Gunjin Shogi: Shogi Club Rules](https://www.ne.jp/asahi/tetsu/toybox/kapitan/kp036.htm). The community-published variant supplies this mode's roster, rank table, movement, and headquarters exceptions; this package uses a plain 9×9 adaptation.

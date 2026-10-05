@@ -4,6 +4,7 @@ export type SetupPiece = Coordinate & { kind: string };
 export type MoveResolution = {
   pieces: readonly Piece[];
   captured: readonly Piece[];
+  revealed?: readonly { owner: Player; kind: string }[];
   movedPiece?: Piece;
   winner?: Player | null;
   reason?: MatchResult["reason"];

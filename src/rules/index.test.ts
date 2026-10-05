@@ -3,6 +3,8 @@ import { combatWinner } from "./salpakan.ts";
 import { LUZHANQI_MINI_RULES } from "./luzhanqiMini.ts";
 import { HIDDEN_HASAMI_RULES } from "./hiddenHasami.ts";
 import { SALPAKAN_RULES } from "./salpakan.ts";
+import { GUNJIN_SHOGI_RULES, gunjinCombat } from "./gunjinShogi.ts";
+import { STRATEGO_LITE_RULES, strategoCombat } from "./strategoLite.ts";
 import type { AuthoritativeMatch, Piece } from "../types.ts";
 
 function board(mode: AuthoritativeMatch["mode"], width: number, height: number, pieces: Piece[]): AuthoritativeMatch {
@@ -93,5 +95,78 @@ describe("Salpakan rank outcomes", () => {
     const resolution = SALPAKAN_RULES.resolveMove(board("salpakan", 9, 8, [attacker, flag]), attacker, { x: 4, y: 4 });
     expect(resolution.winner).toBe(1);
     expect(resolution.pieces).toContainEqual({ ...attacker, x: 4, y: 4 });
+  });
+});
+
+describe("Hidden capture-flag rules", () => {
+  it("checks every ranked combat pair plus special flag, bomb, miner, and spy cases", () => {
+    const ranked = ["marshal", "general", "colonel", "major", "captain", "lieutenant", "sergeant", "miner", "scout", "spy"];
+    for (let attack = 0; attack < ranked.length; attack += 1) {
+      for (let defend = 0; defend < ranked.length; defend += 1) {
+        const a = ranked[attack]!;
+        const d = ranked[defend]!;
+        const exceptionalSpyAttack = (a === "spy" && d === "marshal") || (a === "marshal" && d === "spy");
+        const expected = exceptionalSpyAttack ? "attacker" : attack === defend ? "both" : attack < defend ? "attacker" : "defender";
+        expect(strategoCombat(a, d)).toBe(expected);
+      }
+    }
+    expect(strategoCombat("spy", "marshal")).toBe("attacker");
+    expect(strategoCombat("marshal", "spy")).toBe("attacker");
+    expect(strategoCombat("miner", "bomb")).toBe("attacker");
+    expect(strategoCombat("scout", "bomb")).toBe("defender");
+    expect(strategoCombat("scout", "flag")).toBe("attacker");
+  });
+
+  it("preserves ranks in player views but records only ranks revealed by a battle", () => {
+    const attacker = piece("a", 0, "scout", 4, 4);
+    const defender = piece("d", 1, "marshal", 4, 5);
+    const state = board("stratego-lite", 10, 10, [attacker, defender]);
+    const result = STRATEGO_LITE_RULES.resolveMove(state, attacker, { x: 4, y: 5 });
+    expect(result.revealed).toEqual([{ owner: 0, kind: "scout" }, { owner: 1, kind: "marshal" }]);
+    expect(result.pieces.map(item => item.id)).toEqual(["d"]);
+    expect(STRATEGO_LITE_RULES.legalDestinations(state, piece("flag", 0, "flag", 0, 6))).toEqual([]);
+  });
+
+  it("validates the complete 40-piece setup and keeps lakes impassable", () => {
+    const roster = STRATEGO_LITE_RULES.roster(0, 10, 10);
+    expect(roster).toHaveLength(40);
+    const setup = roster.map((kind, index) => ({ kind, x: index % 10, y: 6 + Math.floor(index / 10) }));
+    expect(STRATEGO_LITE_RULES.validateSetup(0, setup)).toBe(true);
+    const scout = piece("s", 0, "scout", 1, 4);
+    expect(STRATEGO_LITE_RULES.legalDestinations(board("stratego-lite", 10, 10, [scout]), scout)).not.toContainEqual({ x: 4, y: 4 });
+  });
+});
+
+describe("Gunjin Shogi club-rule adaptation", () => {
+  it("checks the full combat matrix and documented special-piece exceptions", () => {
+    const ranks = ["general", "lieutenant-general", "major-general", "colonel", "lieutenant-colonel", "major", "captain", "lieutenant", "second-lieutenant", "cavalry"];
+    for (let attack = 0; attack < ranks.length; attack += 1) {
+      for (let defend = 0; defend < ranks.length; defend += 1) {
+        const expected = attack === defend ? "both" : attack < defend ? "attacker" : "defender";
+        expect(gunjinCombat(ranks[attack]!, ranks[defend]!)).toBe(expected);
+      }
+    }
+    const ranksAndSpecials = [...ranks, "aircraft", "tank", "engineer", "spy", "mine", "flag"];
+    for (const attacker of ranksAndSpecials) {
+      for (const defender of ranksAndSpecials) {
+        expect(() => gunjinCombat(attacker, defender)).not.toThrow();
+      }
+    }
+    expect(gunjinCombat("spy", "general")).toBe("attacker");
+    expect(gunjinCombat("spy", "lieutenant-general")).toBe("attacker");
+    expect(gunjinCombat("engineer", "mine")).toBe("attacker");
+    expect(gunjinCombat("engineer", "tank")).toBe("attacker");
+    expect(gunjinCombat("flag", "general")).toBe("both");
+  });
+
+  it("validates all 31 pieces in the four setup ranks and confines public history", () => {
+    const roster = GUNJIN_SHOGI_RULES.roster(0, 9, 9);
+    expect(roster).toHaveLength(31);
+    const setup = roster.map((kind, index) => ({ kind, x: index % 9, y: 5 + Math.floor(index / 9) }));
+    expect(GUNJIN_SHOGI_RULES.validateSetup(0, setup)).toBe(true);
+    const pieces = [piece("s", 0, "spy", 3, 7), piece("e", 1, "general", 3, 8)];
+    const result = GUNJIN_SHOGI_RULES.resolveMove(board("gunjin-shogi", 9, 9, pieces), pieces[0]!, { x: 3, y: 8 });
+    expect(result.revealed).toBeUndefined();
+    expect(result.captured.map(item => item.kind)).toEqual(["general"]);
   });
 });

@@ -4,6 +4,7 @@ import { publicPositionKey } from "./rules/board.ts";
 import { viewForPlayer, publicPosition } from "./views.ts";
 import { drawGunjinBoard } from "./draw.ts";
 import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
+import type { AuthoritativeMatch } from "./types.ts";
 
 describe("match handoff and public information", () => {
   it("hides both board and private setup during handoff, then redacts enemy ranks", () => {
@@ -48,5 +49,46 @@ describe("match handoff and public information", () => {
     const offered = offerDraw(match, 0, match.turn);
     const acknowledged = acknowledgePass(offered, 1, match.turn);
     expect(acknowledged.positionCounts).toEqual({ "known-position": 2 });
+  });
+
+  it("keeps Gunjin Shogi combat identities private while exposing Capture Flag battles", () => {
+    const makeState = (mode: AuthoritativeMatch["mode"], revealed?: { owner: 0 | 1; kind: string }[]): AuthoritativeMatch => ({
+      mode,
+      width: 10,
+      height: 10,
+      phase: "play",
+      currentPlayer: 0,
+      setupStep: 2,
+      turn: 1,
+      privateSetups: [[], []],
+      pieces: [
+        { id: "own", owner: 0, kind: "scout", x: 2, y: 2 },
+        { id: "enemy", owner: 1, kind: "marshal", x: 2, y: 3 },
+      ],
+      positionCounts: {},
+      log: [{
+        turn: 1,
+        player: 0,
+        from: { x: 2, y: 2 },
+        to: { x: 2, y: 3 },
+        capturedCells: [{ x: 2, y: 3 }],
+        capturedCount: 1,
+        revealed,
+      }],
+    });
+
+    const shogi = makeState("gunjin-shogi", [{ owner: 0, kind: "spy" }, { owner: 1, kind: "general" }]);
+    expect(viewForPlayer(shogi, 0).publicLog[0]?.revealed).toBeUndefined();
+    expect(JSON.stringify(publicPosition(shogi))).not.toContain("marshal");
+
+    const captureFlag = makeState("stratego-lite", [{ owner: 0, kind: "scout" }, { owner: 1, kind: "marshal" }]);
+    expect(viewForPlayer(captureFlag, 0).publicLog[0]?.revealed).toEqual([
+      { owner: 0, kind: "scout" },
+      { owner: 1, kind: "marshal" },
+    ]);
+    expect(decodePublicReplay(encodePublicReplay(captureFlag))?.events[0]?.revealed).toEqual([
+      { owner: 0, kind: "scout" },
+      { owner: 1, kind: "marshal" },
+    ]);
   });
 });

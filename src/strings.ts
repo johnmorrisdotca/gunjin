@@ -10,6 +10,9 @@ export const STRINGS = {
     pass: "Pass the device to the named player, then continue.",
     setup: "Place every piece in your home area, then submit your side.",
     turn: "Move one piece. Opponent ranks stay hidden.",
+    captureFlagTurn: "Choose a move. Ranks are revealed when pieces battle.",
+    battleHistory: "Recent battles",
+    battle: "Battle",
     selectPiece: "Choose one of your pieces.",
     selectTarget: "Choose a highlighted destination.",
     invalidSetup: "That setup does not meet this mode's placement rules.",
@@ -53,6 +56,8 @@ export const STRINGS = {
       "hidden-hasami": "Hidden Hasami",
       "luzhanqi-mini": "Luzhanqi Mini",
       salpakan: "Salpakan Classic",
+      "stratego-lite": "Hidden Capture Flag",
+      "gunjin-shogi": "Gunjin Shogi · Club Rules",
     },
   },
   ja: {
@@ -60,6 +65,9 @@ export const STRINGS = {
     pass: "表示されたプレイヤーに端末を渡して続けます。",
     setup: "自陣にすべての駒を置いてから配置を確定します。",
     turn: "駒を一つ動かします。相手の階級は表示されません。",
+    captureFlagTurn: "駒を動かします。戦闘では両方の階級が公開されます。",
+    battleHistory: "最近の戦闘",
+    battle: "戦闘",
     selectPiece: "自分の駒を選びます。",
     selectTarget: "色のついた移動先を選びます。",
     invalidSetup: "この配置は、このゲームの配置ルールに合いません。",
@@ -103,6 +111,8 @@ export const STRINGS = {
       "hidden-hasami": "隠し挟み将棋",
       "luzhanqi-mini": "陸戦棋ミニ",
       salpakan: "サルパカン・クラシック",
+      "stratego-lite": "隠し旗取り",
+      "gunjin-shogi": "軍人将棋・将棋部ルール",
     },
   },
 } as const;
@@ -129,8 +139,18 @@ export function roleName(language: Language, role: string): string {
       "lieutenant-colonel": "中佐", major: "少佐", captain: "大尉",
       "first-lieutenant": "中尉", "second-lieutenant": "少尉", sergeant: "軍曹",
       private: "兵", spy: "スパイ",
+      marshal: "元帥", general: "大将", miner: "工兵",
+      lieutenant: "中尉", "lieutenant-general": "中将", "major-general": "少将",
+      aircraft: "飛行機", tank: "戦車", cavalry: "騎兵",
     };
     return ja[role] ?? role;
   }
+  const names: Record<string, string> = {
+    marshal: "Marshal", general: "General", miner: "Miner", bomb: "Bomb",
+    "lieutenant-general": "Lieutenant General", "major-general": "Major General",
+    "lieutenant-colonel": "Lieutenant Colonel", "second-lieutenant": "Second Lieutenant",
+    aircraft: "Aircraft", tank: "Tank", cavalry: "Cavalry",
+  };
+  if (names[role]) return names[role];
   return role.replaceAll("-", " ").replace(/\b\w/g, letter => letter.toUpperCase());
 }

@@ -175,6 +175,7 @@ export function playMove(
     to: action.to,
     capturedCells: resolution.captured.map(({ x, y }) => ({ x, y })),
     capturedCount: resolution.captured.length,
+    revealed: resolution.revealed?.map(piece => ({ owner: piece.owner, kind: piece.kind })),
     outcome: result,
   };
   next = { ...next, log: [...match.log, event] };
