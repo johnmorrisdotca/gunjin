@@ -6,6 +6,10 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Repository only: the README lint also fails a README over 64,000 characters, since npm shows only the first 65,536 of one. The README is 46,000.
+
 ## [0.1.4] - 2026-10-06
 
 Nothing that was exported has changed. npm shows the README from the tarball, so a README that is fuller is a release.

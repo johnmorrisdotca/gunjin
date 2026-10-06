@@ -14,22 +14,22 @@ A typed, immutable game engine and a private pass-the-device browser player, in 
 <p align="center"><a href="https://johnmorrisdotca.github.io/gunjin/"><strong>Play the demo →</strong></a> · <a href="https://johnmorrisdotca.github.io/gunjin/api.html">API reference</a> · <a href="docs/RULES.md">Rules and adaptations</a></p>
 
 <table align="center">
-  <tr>
-    <td align="center" valign="top">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-desk-light.webp" alt="The demo on a desk: Gunjin's header with its language chooser, five cloth patches and the Help switch, the settings row (game, board size, language, board material, piece style and New game), then a 7×7 Hidden Hasami board on green felt with blue's seven plain discs along the top, the line 'Move one piece. Opponent ranks stay hidden.' above it, and red to move" width="600">
-      </picture>
-      <br><em>The demo on a desk: a 7×7 Hidden Hasami game, red to move.</em>
-    </td>
-    <td align="center" valign="top">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-phone-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-phone-light.webp" alt="The demo on a phone, in Japanese: the same Hidden Hasami board with red's leader (L) and six guards (G) along the bottom, blue's pieces as plain discs along the top, and the Offer draw, Resign and Save public replay buttons under it, in Japanese" width="190">
-      </picture>
-      <br><em>On a phone, in Japanese, in the device's light or dark.</em>
-    </td>
-  </tr>
+<tr>
+<td align="center" valign="top">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-desk-light.webp" alt="The demo on a desk: Gunjin's header with its language chooser, five cloth patches and the Help switch, the settings row (game, board size, language, board material, piece style and New game), then a 7×7 Hidden Hasami board on green felt with blue's seven plain discs along the top, the line 'Move one piece. Opponent ranks stay hidden.' above it, and red to move" width="600">
+</picture>
+<br><em>The demo on a desk: a 7×7 Hidden Hasami game, red to move.</em>
+</td>
+<td align="center" valign="top">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-phone-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hero-phone-light.webp" alt="The demo on a phone, in Japanese: the same Hidden Hasami board with red's leader (L) and six guards (G) along the bottom, blue's pieces as plain discs along the top, and the Offer draw, Resign and Save public replay buttons under it, in Japanese" width="190">
+</picture>
+<br><em>On a phone, in Japanese, in the device's light or dark.</em>
+</td>
+</tr>
 </table>
 
 Gunjin brings five hidden-rank strategy games together behind one small API:
@@ -109,70 +109,70 @@ match, each side must submit a valid roster before play begins. The
 Each picture is a real game, drawn by the package, taken from [the demo](https://johnmorrisdotca.github.io/gunjin/) with `pnpm screenshots:readme`, in light and dark. Red (the first side) sees its own ranks; the other side's pieces are plain discs.
 
 <table>
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hasami-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hasami-desk-light.webp" alt="A 9×9 Hidden Hasami board on green felt: red's leader (L) and eight guards (G) along the bottom row, blue's nine plain discs along the top row, and the buttons Offer draw, Resign and Save public replay under it" width="300">
-      </picture>
-      <br><em><strong>Hidden Hasami.</strong> One leader and guards that all move alike, hidden from the other side; 7×7 or 9×9. Capture the leader to win.</em>
-    </td>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/luzhanqi-mini-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/luzhanqi-mini-desk-light.webp" alt="A 7×8 Luzhanqi Mini board: red's fourteen pieces in the two bottom rows with their letters (C, O, S, E, B, M, F) and blue's as plain discs at the top, with two headquarters on each back row and two green safe camps in the middle" width="300">
-      </picture>
-      <br><em><strong>Luzhanqi Mini.</strong> A small railway-free board with headquarters and safe camps, bombs and mines. Capture the flag.</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/salpakan-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/salpakan-desk-light.webp" alt="A 9×8 Salpakan Classic board: red's 21 pieces in three rows with ranks such as 5★, Co, Maj, P for private and F for the flag, and blue's 21 pieces as plain discs" width="300">
-      </picture>
-      <br><em><strong>Salpakan Classic.</strong> Twenty-one ranked pieces, from five stars down to privates, spies and a flag.</em>
-    </td>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/capture-flag-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/capture-flag-desk-light.webp" alt="A 10×10 Hidden Capture Flag board: red's forty pieces in four rows labelled Ma, Ge, Co, Maj, Cap, Lt, Sgt, Mi, Sc, B and F, blue's forty as plain discs in the four rows opposite" width="300">
-      </picture>
-      <br><em><strong>Hidden Capture Flag.</strong> The forty-piece original roster on a 10×10 board. A fight reveals both ranks, to both sides.</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/gunjin-shogi-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/gunjin-shogi-desk-light.webp" alt="A 9×9 Gunjin Shogi board: red's thirty-one pieces labelled Ge, LGen, MGen, Co, LtC, Maj, Cap, Lt, 2L, Air, T, Cav, E, M and F in four rows, with a headquarters square on each back row, and blue's pieces as plain discs" width="300">
-      </picture>
-      <br><em><strong>Gunjin Shogi · Club Rules.</strong> Thirty-one pieces with aircraft, tanks, engineers and mines, and four headquarters.</em>
-    </td>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/setup-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/setup-desk-light.webp" alt="The private setup of Salpakan Classic: all twenty-one of red's pieces placed in the bottom three rows in the order they are dealt, the counter 21 / 21, and the buttons Remove last piece and Finish setup" width="300">
-      </picture>
-      <br><em><strong>A private setup.</strong> A side taps its pieces onto its home rows, one at a time in the order they are dealt, and removes the last one if it slips.</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/handoff-phone-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/handoff-phone-light.webp" alt="The handoff screen on a phone: a white panel that says Blue, asks to pass the device to the named player, and has one Pass device button, with the board hidden" width="300">
-      </picture>
-      <br><em><strong>The handoff.</strong> The board is covered while the device changes hands, and only the named player can uncover it.</em>
-    </td>
-    <td align="center" valign="top" width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/slate-tiles-desk-dark.webp">
-        <img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/slate-tiles-desk-light.webp" alt="A 9×9 Gunjin Shogi board on the slate material with square tile pieces: red's pieces labelled with their ranks and blue's as plain white-centred tiles" width="300">
-      </picture>
-      <br><em><strong>Looks.</strong> Three board materials (ivory, wood, slate) and two piece styles (ink discs and tiles), changed at any time.</em>
-    </td>
-  </tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hasami-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/hasami-desk-light.webp" alt="A 9×9 Hidden Hasami board on green felt: red's leader (L) and eight guards (G) along the bottom row, blue's nine plain discs along the top row, and the buttons Offer draw, Resign and Save public replay under it" width="300">
+</picture>
+<br><em><strong>Hidden Hasami.</strong> One leader and guards that all move alike, hidden from the other side; 7×7 or 9×9. Capture the leader to win.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/luzhanqi-mini-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/luzhanqi-mini-desk-light.webp" alt="A 7×8 Luzhanqi Mini board: red's fourteen pieces in the two bottom rows with their letters (C, O, S, E, B, M, F) and blue's as plain discs at the top, with two headquarters on each back row and two green safe camps in the middle" width="300">
+</picture>
+<br><em><strong>Luzhanqi Mini.</strong> A small railway-free board with headquarters and safe camps, bombs and mines. Capture the flag.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/salpakan-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/salpakan-desk-light.webp" alt="A 9×8 Salpakan Classic board: red's 21 pieces in three rows with ranks such as 5★, Co, Maj, P for private and F for the flag, and blue's 21 pieces as plain discs" width="300">
+</picture>
+<br><em><strong>Salpakan Classic.</strong> Twenty-one ranked pieces, from five stars down to privates, spies and a flag.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/capture-flag-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/capture-flag-desk-light.webp" alt="A 10×10 Hidden Capture Flag board: red's forty pieces in four rows labelled Ma, Ge, Co, Maj, Cap, Lt, Sgt, Mi, Sc, B and F, blue's forty as plain discs in the four rows opposite" width="300">
+</picture>
+<br><em><strong>Hidden Capture Flag.</strong> The forty-piece original roster on a 10×10 board. A fight reveals both ranks, to both sides.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/gunjin-shogi-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/gunjin-shogi-desk-light.webp" alt="A 9×9 Gunjin Shogi board: red's thirty-one pieces labelled Ge, LGen, MGen, Co, LtC, Maj, Cap, Lt, 2L, Air, T, Cav, E, M and F in four rows, with a headquarters square on each back row, and blue's pieces as plain discs" width="300">
+</picture>
+<br><em><strong>Gunjin Shogi · Club Rules.</strong> Thirty-one pieces with aircraft, tanks, engineers and mines, and four headquarters.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/setup-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/setup-desk-light.webp" alt="The private setup of Salpakan Classic: all twenty-one of red's pieces placed in the bottom three rows in the order they are dealt, the counter 21 / 21, and the buttons Remove last piece and Finish setup" width="300">
+</picture>
+<br><em><strong>A private setup.</strong> A side taps its pieces onto its home rows, one at a time in the order they are dealt, and removes the last one if it slips.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/handoff-phone-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/handoff-phone-light.webp" alt="The handoff screen on a phone: a white panel that says Blue, asks to pass the device to the named player, and has one Pass device button, with the board hidden" width="300">
+</picture>
+<br><em><strong>The handoff.</strong> The board is covered while the device changes hands, and only the named player can uncover it.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/slate-tiles-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/slate-tiles-desk-light.webp" alt="A 9×9 Gunjin Shogi board on the slate material with square tile pieces: red's pieces labelled with their ranks and blue's as plain white-centred tiles" width="300">
+</picture>
+<br><em><strong>Looks.</strong> Three board materials (ivory, wood, slate) and two piece styles (ink discs and tiles), changed at any time.</em>
+</td>
+</tr>
 </table>
 
 ## Use it in your project
