@@ -60,7 +60,7 @@ Capture the opposing flag or complete the flag-advance claim. Resignation loses;
 
 ### 🗺️ Board & Components
 
-The 10×10 board has the four central 2×2 lake regions at files 2–3 and 6–7, ranks 4–5. Each side uses the 40-piece Stratego Original roster: marshal 1, general 1, colonel 2, major 3, captain 4, lieutenant 4, sergeant 4, miner 5, scout 8, spy 1, bomb 6, flag 1.
+The 10×10 board has two central 2×2 lakes, at files 2–3 and 6–7, ranks 4–5, and draws them as water. Each side uses the 40-piece Stratego Original roster: marshal 1, general 1, colonel 2, major 3, captain 4, lieutenant 4, sergeant 4, miner 5, scout 8, spy 1, bomb 6, flag 1.
 
 ### 🤫 Hidden Information Logic
 

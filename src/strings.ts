@@ -55,6 +55,7 @@ export const STRINGS = {
     opponent: "Opponent piece",
     camp: "Safe camp",
     headquarters: "Headquarters",
+    lake: "Lake",
     language: "Language",
     modeNames: {
       "hidden-hasami": "Hidden Hasami",
@@ -110,6 +111,7 @@ export const STRINGS = {
     opponent: "相手の駒",
     camp: "安全地帯",
     headquarters: "司令部",
+    lake: "湖",
     language: "言語",
     modeNames: {
       "hidden-hasami": "隠し挟み将棋",

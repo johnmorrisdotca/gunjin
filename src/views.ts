@@ -1,5 +1,6 @@
 import { MODE_RULES } from "./rules/index.ts";
 import { isCamp, isHeadquarters } from "./rules/luzhanqiMini.ts";
+import { isLake } from "./rules/strategoLite.ts";
 import type {
   AuthoritativeMatch,
   Coordinate,
@@ -86,16 +87,23 @@ export function legalMovesForCurrentPlayer(
     })));
 }
 
-/** Public board markings, with no role-dependent information. */
+/** Public board markings (camps, headquarters and lakes), with no role-dependent information. */
 export function boardFeatures(
   mode: AuthoritativeMatch["mode"],
   width: number,
   height: number,
-): { camps: Coordinate[]; headquarters: Coordinate[] } {
+): { camps: Coordinate[]; headquarters: Coordinate[]; lakes: Coordinate[] } {
   if (mode === "gunjin-shogi") {
-    return { camps: [], headquarters: [{ x: 3, y: 0 }, { x: 5, y: 0 }, { x: 3, y: 8 }, { x: 5, y: 8 }] };
+    return { camps: [], headquarters: [{ x: 3, y: 0 }, { x: 5, y: 0 }, { x: 3, y: 8 }, { x: 5, y: 8 }], lakes: [] };
   }
-  if (mode !== "luzhanqi-mini") return { camps: [], headquarters: [] };
+  if (mode === "stratego-lite") {
+    const lakes: Coordinate[] = [];
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) if (isLake({ x, y })) lakes.push({ x, y });
+    }
+    return { camps: [], headquarters: [], lakes };
+  }
+  if (mode !== "luzhanqi-mini") return { camps: [], headquarters: [], lakes: [] };
   const camps: Coordinate[] = [];
   const headquarters: Coordinate[] = [];
   for (let y = 0; y < height; y += 1) {
@@ -104,5 +112,5 @@ export function boardFeatures(
       if (isHeadquarters({ x, y })) headquarters.push({ x, y });
     }
   }
-  return { camps, headquarters };
+  return { camps, headquarters, lakes: [] };
 }

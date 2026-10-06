@@ -215,6 +215,9 @@ export function offerDraw(
   if (match.phase !== "play" || match.currentPlayer !== player || match.turn !== expectedTurn) {
     throw new RangeError("The draw offer is stale or out of turn");
   }
+  if (match.drawOffer === (1 - player)) {
+    throw new RangeError("The opponent's draw offer has to be accepted or declined first");
+  }
   return {
     ...match,
     phase: "pass",

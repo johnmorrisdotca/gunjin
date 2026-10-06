@@ -17,6 +17,11 @@ const LAKES = new Set([
   "2:4", "3:4", "6:4", "7:4", "2:5", "3:5", "6:5", "7:5",
 ]);
 
+/** True for the eight squares of Hidden Capture Flag's two 2×2 lakes, which no piece may enter or pass over. */
+export function isLake(cell: Coordinate): boolean {
+  return LAKES.has(`${cell.x}:${cell.y}`);
+}
+
 /** Original streamlined capture-flag rules using the published Original roster and combat table. */
 export const STRATEGO_LITE_RULES: ModeRules = {
   mode: "stratego-lite",
@@ -53,7 +58,7 @@ function legalDestinations(match: AuthoritativeMatch, piece: Piece): Coordinate[
     for (let step = 1; step <= distance; step += 1) {
       const target = { x: piece.x + direction.x * step, y: piece.y + direction.y * step };
       if (target.x < 0 || target.y < 0 || target.x >= match.width || target.y >= match.height) break;
-      if (LAKES.has(`${target.x}:${target.y}`)) break;
+      if (isLake(target)) break;
       const occupant = pieceAt(match.pieces, target);
       if (occupant) {
         if (occupant.owner !== piece.owner) destinations.push(target);

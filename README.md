@@ -303,6 +303,43 @@ try {
 console.log(match.turn, after.turn);                     // the first match is untouched: every call returns a new one
 ```
 
+### End a match by resigning or by agreement
+
+A match need not end on the board. The side to move may resign, which is public and gives the match to the other side, or offer a draw. An offer passes the device to the other side, behind the cover like any handoff, and that side accepts it, declines it or simply moves, which declines it. Every call names the turn it was made for, and a call by the wrong side, for a stale turn or outside play throws a `RangeError` and changes nothing. The four calls take a match of any mode and are exported by `/gunjin-shogi` and `/stratego-lite`.
+
+```ts
+import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+import { acceptDraw, acknowledgePass, declineDraw, offerDraw, resignMatch } from "@johnmorrisdotca/gunjin/gunjin-shogi";
+
+const roster = hasamiRoster(7);
+const homeRow = (player: 0 | 1) => roster.map((kind, x) => ({ kind, x, y: player === 0 ? 6 : 0 }));
+let match = createHasamiMatch({ width: 7, height: 7 });
+match = submitHasamiSetup(match, 0, homeRow(0), match.setupStep);
+match = acknowledgePass(match, 1, match.turn);
+match = submitHasamiSetup(match, 1, homeRow(1), match.setupStep);
+match = acknowledgePass(match, 0, match.turn);                      // red to move
+
+let offered = offerDraw(match, 0, match.turn);                      // red offers a draw
+console.log(offered.phase, offered.currentPlayer, offered.drawOffer);
+let asked = acknowledgePass(offered, 1, offered.turn);              // blue has the device and sees the offer
+asked = declineDraw(asked, 1, asked.turn);                          // blue declines, and still has the move
+console.log(asked.phase, asked.currentPlayer, asked.drawOffer);
+
+offered = offerDraw(match, 0, match.turn);
+const drawn = acceptDraw(acknowledgePass(offered, 1, offered.turn), 1, offered.turn);
+console.log(drawn.phase, drawn.result);                             // agreed: no winner
+
+const resigned = resignMatch(match, 0, match.turn);                 // red resigns instead
+console.log(resigned.phase, resigned.result);
+```
+
+```text
+pass 1 0
+play 1 undefined
+finished { winner: null, reason: 'agreed-draw' }
+finished { winner: 1, reason: 'resigned' }
+```
+
 ### Save the game for a host, and for everybody
 
 Two records are kept, and they are not alike. The **trusted** record holds both sides' ranks, and is only for the code that runs the match. The **public replay** holds no rank the rules keep hidden, and can be shown to anybody; it cannot resume a match.
@@ -394,7 +431,7 @@ console.log("wrote", file.endsWith(".svg"));
 
 ### Where the camps and headquarters are
 
-Two modes mark squares on the board: Luzhanqi Mini has camps and headquarters, and Gunjin Shogi has headquarters. They are public, so `boardFeatures` needs no match.
+Three modes mark squares on the board: Luzhanqi Mini has camps and headquarters, Gunjin Shogi has headquarters, and Hidden Capture Flag has two 2×2 lakes that no piece may enter or cross. They are public, so `boardFeatures` needs no match, and `drawGunjinBoard` and the player draw them for you.
 
 ```ts
 import { boardFeatures } from "@johnmorrisdotca/gunjin/views";
@@ -402,7 +439,8 @@ import { boardFeatures } from "@johnmorrisdotca/gunjin/views";
 const luzhanqi = boardFeatures("luzhanqi-mini", 7, 8);
 console.log(luzhanqi.camps.length, luzhanqi.headquarters.length);   // 4 4
 console.log(boardFeatures("gunjin-shogi", 9, 9).headquarters);      // four headquarters, two on each back row
-console.log(boardFeatures("salpakan", 9, 8));                       // { camps: [], headquarters: [] }
+console.log(boardFeatures("stratego-lite", 10, 10).lakes.length);   // 8 squares: two lakes of four
+console.log(boardFeatures("salpakan", 9, 8));                       // { camps: [], headquarters: [], lakes: [] }
 ```
 
 ### A host that keeps the secret
@@ -523,14 +561,14 @@ Each concern is an entry of its own, so a page loads only what it uses.
 | `@johnmorrisdotca/gunjin/hasami` | Hidden Hasami match creation, roster, setup and moves |
 | `@johnmorrisdotca/gunjin/luzhanqi-mini` | Luzhanqi Mini match creation, roster, setup and moves |
 | `@johnmorrisdotca/gunjin/salpakan` | Salpakan Classic match creation, roster, setup and moves |
-| `@johnmorrisdotca/gunjin/stratego-lite` | Hidden Capture Flag: the generic match calls, its rules and its battle table |
-| `@johnmorrisdotca/gunjin/gunjin-shogi` | Gunjin Shogi: the generic match calls, its rules and its battle table |
+| `@johnmorrisdotca/gunjin/stratego-lite` | Hidden Capture Flag: the generic match calls, resigning and draws, its rules and its battle table |
+| `@johnmorrisdotca/gunjin/gunjin-shogi` | Gunjin Shogi: the generic match calls, resigning and draws, its rules and its battle table |
 | `@johnmorrisdotca/gunjin/trusted` | Full-match serialization for trusted host code: `encodeTrustedMatch` and `decodeTrustedMatch` |
-| `@johnmorrisdotca/gunjin/views` | Player and spectator redaction, legal move coordinates, board features |
+| `@johnmorrisdotca/gunjin/views` | Player and spectator redaction, legal move coordinates, board features (camps, headquarters, lakes) |
 | `@johnmorrisdotca/gunjin/draw` | SVG board drawing |
 | `@johnmorrisdotca/gunjin/play` | Pass-the-device browser player |
 
-The **generic match calls**, `createMatch(mode, size?)`, `rosterForSetup`, `submitSetup`, `acknowledgePass` and `playMove`, take a match of any mode, and are exported by `/stratego-lite` and `/gunjin-shogi`. The other three modes have entries of their own for creating a match, dealing its roster, taking a setup and applying a move, and use those two entries' `acknowledgePass` to take the handoff. The calls that offer, accept or decline a draw and that resign are used by the player and are not exported yet (see the [Roadmap](#roadmap)).
+The **generic match calls**, `createMatch(mode, size?)`, `rosterForSetup`, `submitSetup`, `acknowledgePass` and `playMove`, take a match of any mode, and are exported by `/stratego-lite` and `/gunjin-shogi`. The other three modes have entries of their own for creating a match, dealing its roster, taking a setup and applying a move, and use those two entries' `acknowledgePass` to take the handoff. The calls that end a match without a capture, `offerDraw`, `acceptDraw`, `declineDraw` and `resignMatch`, take a match of any mode and are exported by the same two entries (see [End a match by resigning or by agreement](#end-a-match-by-resigning-or-by-agreement)).
 
 ### The calls to learn first
 
@@ -541,6 +579,7 @@ The **generic match calls**, `createMatch(mode, size?)`, `rosterForSetup`, `subm
 | `rosterForSetup(match, player)` and mode roster functions | Read the current player's piece roster |
 | `submitSetup(match, player, placements, expectedSetupStep)` | Validate and submit a private setup immutably |
 | `playMove(match, player, { from, to, expectedTurn })` | Validate and apply a move immutably |
+| `resignMatch(match, player, expectedTurn)`, `offerDraw`, `acceptDraw`, `declineDraw` | End a match by resignation, or by agreement |
 | `viewForPlayer(match, player)`, `publicPosition(match)` | Return role-redacted views |
 | `publicReplay(match)`, `encodePublicReplay(match)`, `decodePublicReplay(json)` | Create, encode, and validate role-safe replay records |
 | `drawGunjinBoard(view, options?)`, `mountGunjin(element, match, options?)` | Draw SVG or mount the local player |
@@ -604,13 +643,7 @@ The player's words are English and Japanese, chosen with the `language` option. 
 
 ## Roadmap
 
-The package is an engine and a same-device player, and the limits above are meant: no accounts, matchmaking or network transport. Nothing else is promised for a date; ideas are welcome in the [issues](https://github.com/johnmorrisdotca/gunjin/issues).
-
-Not here yet, and each welcome as an issue:
-
-- The calls for drawing, resigning and offering or taking a draw (`offerDraw`, `acceptDraw`, `declineDraw`, `resignMatch`) are used by the player and are not exported from any entry point. A host that runs matches cannot yet end one by resignation or agreement except through the player.
-- Hidden Capture Flag has two 2×2 lakes, which no piece may enter or pass over. The rules keep them, but the board does not draw them yet, so they look like plain squares.
-- `docs/API.md` and the entry-point table once said `/trusted` carries the generic match calls; it carries the two serialization functions, and the generic calls are in `/stratego-lite` and `/gunjin-shogi`.
+The package is an engine and a same-device player, and the limits above are meant: no accounts, matchmaking or network transport. Nothing else is promised for a date, and nothing in the engine or the player is known to be missing; ideas are welcome in the [issues](https://github.com/johnmorrisdotca/gunjin/issues).
 
 ## Architecture
 

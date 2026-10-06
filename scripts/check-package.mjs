@@ -71,6 +71,13 @@ const entries = Object.keys(pkg.exports).map(key => key === "." ? pkg.name : `${
 writeFileSync(join(project, "esm.mjs"), `${entries.map((entry, index) => `import * as m${index} from ${JSON.stringify(entry)};`).join("\n")}
 const modules = [${entries.map((_, index) => `m${index}`).join(", ")}];
 if (modules.some(module => Object.keys(module).length === 0)) throw new Error("An installed entry exports nothing");
+// A host ends a match by resignation or by agreement through the two generic entries.
+for (const entry of ["stratego-lite", "gunjin-shogi"]) {
+  const ending = await import(${JSON.stringify(pkg.name)} + "/" + entry);
+  for (const name of ["resignMatch", "offerDraw", "acceptDraw", "declineDraw"]) {
+    if (typeof ending[name] !== "function") throw new Error(entry + " does not export " + name);
+  }
+}
 if (typeof m0.mountGunjin !== "function" || typeof m0.viewForPlayer !== "function") throw new Error("The player exports are missing");
 `);
 writeFileSync(join(project, "cjs.cjs"), `for (const entry of ${JSON.stringify(entries)}) {

@@ -19,9 +19,9 @@ export function drawGunjinBoard(view: PlayerView, options: DrawOptions = {}): st
   const cellSize = 52;
   const language = options.language ?? "en";
   const palette = {
-    ivory: { paper: "#f7f3e9", grid: "#d0c8b8", ink: "#273029", frame: "#a98954" },
-    wood: { paper: "#e5cda6", grid: "#bca582", ink: "#493e2f", frame: "#766040" },
-    slate: { paper: "#262a27", grid: "#454a44", ink: "#ece8dc", frame: "#82877f" },
+    ivory: { paper: "#f7f3e9", grid: "#d0c8b8", ink: "#273029", frame: "#a98954", water: "#a9cde0", shore: "#4f819c", wave: "#eef6fa" },
+    wood: { paper: "#e5cda6", grid: "#bca582", ink: "#493e2f", frame: "#766040", water: "#8fb7c8", shore: "#3f6c80", wave: "#e6f1f5" },
+    slate: { paper: "#262a27", grid: "#454a44", ink: "#ece8dc", frame: "#82877f", water: "#1f4257", shore: "#6aa3bf", wave: "#7fb4cf" },
   }[options.material ?? "ivory"];
   const featureSet = boardFeatures(view.mode, view.width, view.height);
   const markedPieces = (view.pieces ?? []).map(piece => ({
@@ -69,7 +69,54 @@ export function drawGunjinBoard(view: PlayerView, options: DrawOptions = {}): st
     return `<g>${base}${marker}${featureText}${pieceSvg}</g>`;
   }).join("");
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 ${view.width * cellSize + 4} ${view.height * cellSize + 4}" role="img" aria-label="${words(language).title}" style="display:block;width:100%;height:auto;background:${palette.paper}">${cells}<rect width="${view.width * cellSize}" height="${view.height * cellSize}" fill="none" stroke="${palette.frame}" stroke-width="2"/></svg>`;
+  const lakes = lakeRegions(featureSet.lakes).map(region => drawLake(region, cellSize, palette, words(language).lake)).join("");
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 ${view.width * cellSize + 4} ${view.height * cellSize + 4}" role="img" aria-label="${words(language).title}" style="display:block;width:100%;height:auto;background:${palette.paper}">${cells}${lakes}<rect width="${view.width * cellSize}" height="${view.height * cellSize}" fill="none" stroke="${palette.frame}" stroke-width="2"/></svg>`;
+}
+
+/** Groups lake squares that touch along a side, so that each lake is drawn once as one piece of water. */
+function lakeRegions(lakes: readonly Coordinate[]): Coordinate[][] {
+  const remaining = new Map(lakes.map(cell => [`${cell.x}:${cell.y}`, cell]));
+  const regions: Coordinate[][] = [];
+  for (const [key, start] of remaining) {
+    if (!remaining.has(key)) continue;
+    const region: Coordinate[] = [];
+    const queue = [start];
+    remaining.delete(key);
+    while (queue.length > 0) {
+      const cell = queue.pop()!;
+      region.push(cell);
+      for (const next of [{ x: cell.x + 1, y: cell.y }, { x: cell.x - 1, y: cell.y }, { x: cell.x, y: cell.y + 1 }, { x: cell.x, y: cell.y - 1 }]) {
+        const nextKey = `${next.x}:${next.y}`;
+        const found = remaining.get(nextKey);
+        if (found) {
+          remaining.delete(nextKey);
+          queue.push(found);
+        }
+      }
+    }
+    regions.push(region);
+  }
+  return regions;
+}
+
+/** One lake: water with a shore line, and two ripples in each square. No piece may enter or cross it. */
+function drawLake(
+  region: readonly Coordinate[],
+  cellSize: number,
+  palette: { water: string; shore: string; wave: string },
+  label: string,
+): string {
+  const left = Math.min(...region.map(cell => cell.x));
+  const top = Math.min(...region.map(cell => cell.y));
+  const right = Math.max(...region.map(cell => cell.x)) + 1;
+  const bottom = Math.max(...region.map(cell => cell.y)) + 1;
+  const ripples = region.map(cell => {
+    const x = cell.x * cellSize;
+    const y = cell.y * cellSize;
+    return `<path d="M${x + 9} ${y + 20}q4.25-5 8.5 0t8.5 0t8.5 0t8.5 0M${x + 9} ${y + 34}q4.25-5 8.5 0t8.5 0t8.5 0t8.5 0" fill="none" stroke="${palette.wave}" stroke-width="2" stroke-linecap="round"/>`;
+  }).join("");
+  return `<g data-lake="true" aria-label="${escapeAttribute(label)}"><rect x="${left * cellSize + 2}" y="${top * cellSize + 2}" width="${(right - left) * cellSize - 4}" height="${(bottom - top) * cellSize - 4}" rx="10" fill="${palette.water}" stroke="${palette.shore}" stroke-width="2"/>${ripples}</g>`;
 }
 
 function drawPiece(

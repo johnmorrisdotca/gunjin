@@ -36,6 +36,8 @@ function isMatch(value: unknown): value is AuthoritativeMatch {
     (match.currentPlayer !== 0 && match.currentPlayer !== 1) ||
     !Number.isInteger(match.setupStep) || match.setupStep < 0 || match.setupStep > 2 ||
     !Number.isInteger(match.turn) || match.turn < 0 ||
+    (match.drawOffer !== undefined && match.drawOffer !== 0 && match.drawOffer !== 1) ||
+    (match.passPurpose !== undefined && !["setup", "play", "draw"].includes(match.passPurpose)) ||
     match.privateSetups.length !== 2 ||
     match.privateSetups.some((pieces: unknown) => !Array.isArray(pieces) || !pieces.every(piece => isPiece(piece, match)))
   ) {

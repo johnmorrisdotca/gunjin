@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/gunjin",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Five hidden-rank strategy board games with immutable TypeScript engines and an English and Japanese pass-the-device player. Zero runtime dependencies.",
   "keywords": [
     "board-game",

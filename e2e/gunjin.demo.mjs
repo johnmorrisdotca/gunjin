@@ -92,6 +92,32 @@ test("a Gunjin Shogi game is played to its end: the colonel takes the flag and i
   expect(errors).toEqual([]);
 });
 
+test("Hidden Capture Flag's two lakes are drawn, and named to a screen reader, in light and dark", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", error => errors.push(String(error)));
+  const base = await servePages(page, ROOT);
+  await page.goto(base);
+  await page.getByLabel("Game", { exact: true }).selectOption("stratego-lite");
+  await page.getByRole("button", { name: "New game" }).click();
+  await expect(page.locator(".gj-cell")).toHaveCount(100);
+  await expect(page.locator("svg [data-lake]")).toHaveCount(2);
+  await expect(page.locator('.gj-cell[aria-label^="Lake"]')).toHaveCount(8);
+  const water = () => page.locator("svg [data-lake] rect").first().getAttribute("fill");
+  const ivory = await water();
+  await page.locator("#material").selectOption("slate");
+  await expect(page.locator("svg [data-lake]")).toHaveCount(2);
+  expect(await water()).not.toBe(ivory);
+  // A lake is a place no piece goes: tapping it while placing a piece puts nothing there, since setup is in the home rows.
+  await page.locator('.gj-cell[aria-label^="Lake"]').first().click();
+  await expect(page.locator(".gj-setup-count")).toContainText("1 / 40");
+  // The other four games draw none.
+  await page.getByLabel("Game", { exact: true }).selectOption("salpakan");
+  await page.getByRole("button", { name: "New game" }).click();
+  await expect(page.locator(".gj-cell")).toHaveCount(72);
+  await expect(page.locator("svg [data-lake]")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("the setting rows do not overlap at a phone's width", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const base = await servePages(page, ROOT);

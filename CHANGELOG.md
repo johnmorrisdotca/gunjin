@@ -6,8 +6,19 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-06
+
+### Added
+
+- **A host can end a match by resignation or by agreement.** `resignMatch`, `offerDraw`, `acceptDraw` and `declineDraw`, which the player used and no entry exported, are now exported by `/stratego-lite` and `/gunjin-shogi`, the entries that carry the generic match calls, and take a match of any mode. Only the side to move may resign or offer; the other side accepts or declines on its own turn, once the handoff is acknowledged; a call by the wrong side, for a stale turn or outside play throws a `RangeError` and changes nothing. Resigning is public and gives the match to the other side, and an agreed draw has no winner.
+- **Hidden Capture Flag's two 2×2 lakes are drawn.** The rules always kept them, and the board showed plain squares. `drawGunjinBoard` and the player now draw each lake as one piece of water with ripples, in a colour for each of the three materials (ivory, wood and slate, so in light and dark), and each lake square is named "Lake" (湖) to a screen reader in the player. `boardFeatures` returns `lakes` beside `camps` and `headquarters`, an empty list for the other four games.
+- Tests for both: `src/ending.test.ts` ends a match of every mode by resignation, by an accepted draw and by a declined one, and tries the wrong side, a stale turn, a handoff and a finished match; `src/lakes.test.ts` holds the drawn lakes to the squares the rules refuse a piece. The README has a runnable example of ending a match, and `pnpm test:readme` runs it.
+
 ### Changed
 
+- `offerDraw` refuses an offer from a side that has an offer from the other side waiting for its answer; it has to accept it or decline it, or move.
+- `decodeTrustedMatch` also refuses a record whose `drawOffer` or `passPurpose` is not one the engine writes.
+- The README's pictures of Hidden Capture Flag are taken again with the lakes in them, and its Roadmap no longer lists either gap. `docs/RULES.md` said four lakes; there are two.
 - Repository only: the README lint also fails a README over 64,000 characters, since npm shows only the first 65,536 of one. The README is 46,000.
 
 ## [0.1.4] - 2026-10-06

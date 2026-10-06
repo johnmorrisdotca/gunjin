@@ -12,7 +12,7 @@ import {
 import { drawGunjinBoard } from "./draw.ts";
 import { GUNJIN_STYLE } from "./style.ts";
 import { playerName, roleName, words } from "./strings.ts";
-import { viewForPlayer, publicPosition } from "./views.ts";
+import { boardFeatures, viewForPlayer, publicPosition } from "./views.ts";
 import { encodePublicReplay } from "./replay.ts";
 import { isCamp, isHeadquarters } from "./rules/luzhanqiMini.ts";
 import type { AuthoritativeMatch, Coordinate, Player, PublicPosition } from "./types.ts";
@@ -315,6 +315,7 @@ export function mountGunjin(
     view: ReturnType<typeof viewForPlayer>,
     targets: readonly Coordinate[],
   ) => {
+    const lakes = boardFeatures(match.mode, match.width, match.height).lakes;
     const grid = document.createElement("div");
     grid.className = "gj-cells";
     grid.setAttribute("role", "group");
@@ -323,11 +324,14 @@ export function mountGunjin(
       const x = cell % match.width;
       const y = Math.floor(cell / match.width);
       const piece = view.pieces?.find(item => item.x === x && item.y === y);
-      const label = piece?.kind
-        ? `${playerName(language(), piece.owner)} ${roleName(language(), piece.kind)}`
-        : piece?.hidden
-          ? words(language()).opponent
-          : "";
+      const lake = lakes.some(cell => cell.x === x && cell.y === y);
+      const label = lake
+        ? `${words(language()).lake}, ${x + 1}, ${y + 1}`
+        : piece?.kind
+          ? `${playerName(language(), piece.owner)} ${roleName(language(), piece.kind)}`
+          : piece?.hidden
+            ? words(language()).opponent
+            : "";
       const button = document.createElement("button");
       button.type = "button";
       button.className = "gj-cell";
