@@ -28,16 +28,20 @@ shape `{ from, to, expectedTurn }`; stale turns are rejected.
 | `/gunjin-shogi` | `createMatch`, `rosterForSetup`, `submitSetup`, `acknowledgePass`, `playMove`, `GUNJIN_SHOGI_RULES`, `gunjinCombat` |
 
 The mode entry points return authoritative matches containing both sides'
-roles. Keep them in trusted host code. `/trusted` provides generic engine
-operations and `encodeTrustedMatch` / `decodeTrustedMatch` for private host
-storage. This serialization is neither encryption nor a network protocol.
-The five rule adaptations are detailed in [RULES.md](RULES.md).
+roles. Keep them in trusted host code. `/trusted` provides
+`encodeTrustedMatch` / `decodeTrustedMatch` for private host storage. This
+serialization is neither encryption nor a network protocol. The five rule
+adaptations are detailed in [RULES.md](RULES.md).
 
 ## Shared engine and views
 
-`/trusted` re-exports `createMatch`, `rosterForSetup`, `submitSetup`,
-`acknowledgePass`, `playMove`, `offerDraw`, `acceptDraw`, `declineDraw`,
-`resignMatch`, `encodeTrustedMatch`, and `decodeTrustedMatch`.
+`/stratego-lite` and `/gunjin-shogi` export the generic match calls, which take
+a match of any mode: `createMatch(mode, size?)`, `rosterForSetup`,
+`submitSetup`, `acknowledgePass` and `playMove`. The Hasami, Luzhanqi Mini and
+Salpakan entries have calls of their own for creating, dealing, setting up and
+moving, and use `acknowledgePass` from one of those two entries to take the
+handoff. `offerDraw`, `acceptDraw`, `declineDraw` and `resignMatch` are used
+by the browser player and are not exported from any entry point yet.
 
 `/views` exports `viewForPlayer(match, viewer)`, `publicPosition(match)`,
 `legalMovesForCurrentPlayer(match, player)`, and

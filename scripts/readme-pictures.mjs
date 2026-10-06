@@ -1,52 +1,118 @@
-// Captures the README's real desktop and phone games from the built demo.
-import { existsSync, readFileSync, mkdirSync } from "node:fs";
-import { dirname, join, extname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { chromium } from "@playwright/test";
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const id = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name.split("/")[1];
-const site = join(root, id === "jirai" ? "docs" : "site");
-const docs = join(root, "docs");
-mkdirSync(docs, { recursive: true });
-const host = `http://${id}.test`;
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json" };
-const browser = await chromium.launch();
-for (const phone of [false, true]) {
-  const context = await browser.newContext({ viewport: { width: phone ? 390 : 1280, height: phone ? 844 : 900 }, colorScheme: phone ? "dark" : "light", reducedMotion: "reduce", deviceScaleFactor: 2 });
-  const page = await context.newPage();
-  await page.route(`${host}/**`, route => {
-    const pathname = new URL(route.request().url()).pathname;
-    const file = join(site, pathname === "/" ? "index.html" : pathname.slice(1));
-    return existsSync(file) ? route.fulfill({ body: readFileSync(file), contentType: types[extname(file)] ?? "application/octet-stream" }) : route.fulfill({ status: 404 });
-  });
-  await page.goto(`${host}/?lang=en&seed=7&noGuess=0`);
-  if (id === "gunjin") {
-    const size = phone ? 7 : 9;
-    if (phone) { await page.locator("#size").selectOption("7"); await page.getByRole("button", { name: "New game", exact: true }).click(); }
-    for (let i = 0; i < size; i++) await page.locator(`.gj-cell[data-cell="${size * (size - 1) + i}"]`).click();
-    await page.getByRole("button", { name: "Finish setup", exact: true }).click();
-    await page.getByRole("button", { name: "Pass device", exact: true }).click();
-    for (let i = 0; i < size; i++) await page.locator(`.gj-cell[data-cell="${i}"]`).click();
-    await page.getByRole("button", { name: "Finish setup", exact: true }).click();
-    await page.getByRole("button", { name: "Pass device", exact: true }).click();
-  } else if (id === "jirai") {
-    await page.locator('[data-cell="40"]').click();
-    await page.locator('[data-cell="40"][data-kind="open"]').waitFor();
-  } else {
-    if (phone) await page.getByLabel("Board", { exact: true }).selectOption("heart");
-    else {
-      const move = await page.evaluate(async () => (await import("/dist/index.js")).classicEnglish().answer[0]);
-      await page.locator(`.cell[data-cell="${move.from}"]`).click();
-      await page.locator(`.cell[data-cell="${move.to}"]`).click();
-    }
-  }
-  if (phone) {
-    await page.getByRole("button", { name: "日本語", exact: true }).click();
-    await page.locator(id === "gunjin" ? "#player" : "#game").scrollIntoViewIfNeeded();
-  }
-  if (!phone) await page.evaluate(() => window.scrollTo(0, 0));
-  await page.screenshot({ fullPage: !phone, path: join(docs, phone ? "phone.jpg" : "desktop.jpg"), type: "jpeg", quality: 82 });
-  await context.close();
+// Takes the pictures the README shows, from the built demo in `site/`: `pnpm screenshots:readme` (builds the demo, then runs this).
+// The family's standard is in johnmorrisdotca/.github (README-STANDARD.md); the shared part is readme-pictures-lib.mjs.
+// The page is served to a browser without a port, never fetched from the live site, and is the same each run: each side's pieces
+// are placed by tapping cells in roster order, the way a person does, and every picture is of a state the page reaches that way.
+// Output: docs/images/<subject>-<desk|phone>-<light|dark>.webp.
+import { takePictures } from "./readme-pictures-lib.mjs";
+
+const range = (from, count) => Array.from({ length: count }, (_, at) => from + at);
+
+/**
+ * Each game's two setups, as the cells tapped in roster order: the first side takes the bottom rows, the second the top.
+ * Luzhanqi Mini's pieces are placed so that its rules hold (mines and bombs on the back row, the flag on a headquarters).
+ */
+const GAMES = {
+  "hidden-hasami-7": { first: range(42, 7), second: range(0, 7) },
+  "hidden-hasami-9": { first: range(72, 9), second: range(0, 9) },
+  "luzhanqi-mini": { first: [42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 50], second: [7, 8, 9, 10, 11, 12, 13, 0, 2, 3, 4, 5, 6, 1] },
+  salpakan: { first: range(51, 21), second: range(0, 21) },
+  "stratego-lite": { first: range(60, 40), second: range(0, 40) },
+  "gunjin-shogi": { first: [...range(45, 30), 75], second: [...range(0, 30), 31] },
+};
+
+/** Start a game of a mode (at a size, for Hidden Hasami), and wait for its setup screen. */
+async function begin(page, mode, size) {
+  await page.getByLabel("Game", { exact: true }).selectOption(mode);
+  if (size) await page.locator("#size").selectOption(String(size));
+  await page.getByRole("button", { name: /^(New game|新しい対局)$/ }).click();
+  await page.waitForSelector(".gj-cell");
 }
-await browser.close();
-console.log("README desktop and phone screenshots saved.");
+
+/** Tap a side's cells in roster order, then give the device on. `handoff` stops at the screen that hides the board. */
+async function arrange(page, cells, { handoff = false } = {}) {
+  for (const cell of cells) await page.locator(`.gj-cell[data-cell="${cell}"]`).click();
+  await page.locator(".gj-primary").first().click();
+  if (handoff) {
+    await page.waitForSelector(".gj-pass");
+    return;
+  }
+  await page.locator(".gj-pass .gj-primary").click();
+}
+
+/** Both sides arranged, the first side to move: the board each opens on. */
+async function play(page, mode, size) {
+  await begin(page, mode, size);
+  const { first, second } = GAMES[size ? `${mode}-${size}` : mode];
+  await arrange(page, first);
+  await arrange(page, second);
+  await page.locator(".gj-status").waitFor();
+}
+
+const PLAYING = (subject, mode, extra = {}) => ({
+  subject,
+  views: ["desk"],
+  ready: ".gj-cell",
+  target: ".gj-root",
+  prepare: (page) => play(page, mode, extra.size),
+  ...extra,
+});
+
+await takePictures({
+  shots: [
+    // The page from the top: a 7×7 Hidden Hasami game, the first side to move. On a phone, in Japanese.
+    {
+      subject: "hero",
+      views: ["desk", "phone"],
+      height: 1240,
+      ready: ".gj-cell",
+      async prepare(page, { view }) {
+        if (view === "phone") {
+          await page.goto("http://gunjin.test/?lang=ja");
+          await page.waitForSelector(".gj-cell");
+        }
+        await play(page, "hidden-hasami", 7);
+        if (view === "phone") await page.locator(".gj-root").evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
+        else await page.evaluate(() => window.scrollTo(0, 0));
+      },
+    },
+    PLAYING("hasami", "hidden-hasami", { size: 9 }),
+    PLAYING("luzhanqi-mini", "luzhanqi-mini"),
+    PLAYING("salpakan", "salpakan"),
+    PLAYING("capture-flag", "stratego-lite"),
+    PLAYING("gunjin-shogi", "gunjin-shogi"),
+    // A side's private setup: every piece of Salpakan's roster placed, in the order it is dealt.
+    {
+      subject: "setup",
+      views: ["desk"],
+      ready: ".gj-cell",
+      target: ".gj-root",
+      async prepare(page) {
+        await begin(page, "salpakan");
+        for (const cell of GAMES.salpakan.first) await page.locator(`.gj-cell[data-cell="${cell}"]`).click();
+      },
+    },
+    // The screen that hides the board while the device changes hands.
+    {
+      subject: "handoff",
+      views: ["phone"],
+      ready: ".gj-cell",
+      target: ".gj-root",
+      async prepare(page) {
+        await begin(page, "luzhanqi-mini");
+        await arrange(page, GAMES["luzhanqi-mini"].first, { handoff: true });
+      },
+    },
+    // Slate, and tiles instead of discs: the board's looks are options.
+    {
+      subject: "slate-tiles",
+      views: ["desk"],
+      ready: ".gj-cell",
+      target: ".gj-root",
+      async prepare(page) {
+        await page.locator("#material").selectOption("slate");
+        await page.locator("#piece-style").selectOption("tiles");
+        await play(page, "gunjin-shogi");
+      },
+    },
+  ],
+});

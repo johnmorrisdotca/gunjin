@@ -6,13 +6,26 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-10-06
+
+Nothing that was exported has changed. npm shows the README from the tarball, so a README that is fuller is a release.
+
+### Added
+
+- **The README follows the family's README standard** (johnmorrisdotca/.github, `README-STANDARD.md`): a hero picture under the title, `### What's in it` with a picture of each game, an install section, an **Examples** section whose code is run by a test, a table of the five games, an **Accessibility** section, and the entry points and the calls to learn first under API.
+- Twenty pictures in `docs/images`, in light and dark, taken from the built demo by `pnpm screenshots:readme` (`scripts/readme-pictures.mjs`) and shown by absolute address so that GitHub and npm both show them. They are WebP, each under its size budget, and are never in the tarball: `pnpm test:package` fails if one is.
+- `pnpm test:readme` type-checks and runs every TypeScript and JavaScript example in the README against the built package, and the `readme` job in CI runs it.
+- `src/readme.test.js` holds the README to the standard: its sections in order, a language on every code block, a picture's file, its alt text, its caption and its dark twin, the size budget, table widths and plain words.
+
 ### Changed
 
+- The README's pictures moved from `docs/desktop.jpg` and `docs/phone.jpg` to `docs/images/`, and `scripts/check-presentation.mjs` reads the new names.
 - Repository only: the package and everything it exports are unchanged. `CONTRIBUTING.md` is the family's one text with a section of its own for Gunjin, held to the master in johnmorrisdotca/.github by `src/family.test.js`; `ci.yml` and `pages.yml` are the family's one text (`pnpm check`, the demo, and the package on Linux, macOS and Windows), and any jobs of the package's own after them.
 - The demo's page titles read `Gunjin · pitch`, like the rest of the family's.
 
 ### Fixed
 
+- `docs/API.md` and the README said the `/trusted` entry exports the generic match calls (`createMatch`, `acknowledgePass`, `offerDraw`, `resignMatch` and the rest). It exports `encodeTrustedMatch` and `decodeTrustedMatch`; the generic calls are in `/stratego-lite` and `/gunjin-shogi`, and the draw and resign calls are not exported from any entry. The documents now say so. Nothing the package exports has changed.
 - The API reference page wraps a long entry path instead of running about 2 px wider than a 360 px screen. Nothing the package exports has changed.
 
 ## [0.1.3] - 2026-10-05
