@@ -15,7 +15,7 @@ cpSync("docs/RULES.md", "site/rules.md");
 const page = readFileSync("demo/index.html", "utf8")
   .replace("<!--family-head-->", familyHead({
     id,
-    title: "Gunjin · 軍人 · five hidden-rank strategy games",
+    title: "Gunjin · five hidden-rank strategy games",
     description: "Play five hidden-rank strategy board games on one device, in English and Japanese: Hidden Hasami, Luzhanqi Mini, Salpakan Classic, Hidden Capture Flag and Gunjin Shogi. Free and open source.",
     ogTitle: "Gunjin hidden-rank strategy games",
     ogDescription: "Five hidden-rank strategy games for two people sharing one device.",
