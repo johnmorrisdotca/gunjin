@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/gunjin",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Five hidden-rank strategy board games with immutable TypeScript engines and an English and Japanese pass-the-device player. Zero runtime dependencies.",
   "keywords": [
     "board-game",
@@ -34,7 +34,7 @@
     "i18n",
     "replay"
   ],
-  "homepage": "https://github.com/johnmorrisdotca/gunjin#readme",
+  "homepage": "https://johnmorrisdotca.github.io/gunjin/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johnmorrisdotca/gunjin.git"

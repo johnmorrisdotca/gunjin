@@ -24,16 +24,7 @@ Gunjin Shogi · Club Rules. The rules and adaptations are documented in
 [Rules](docs/RULES.md); each mode is named plainly where it differs from a
 traditional ruleset.
 
-- **Play locally.** Two people arrange their pieces privately and pass one
-  device between turns. Opposing ranks stay hidden in the player view.
-- **Build your own interface.** Pure functions create matches, validate
-  setups and moves, and produce redacted views and public replays.
-- **Choose a look.** The browser player supports English or Japanese, three
-  board materials, and two piece styles.
-- **Use it anywhere.** Typed ES modules, no runtime dependencies, and no
-  framework requirement.
-
-## A match in 30 seconds
+## In 30 seconds
 
 ```sh
 npm install @johnmorrisdotca/gunjin
@@ -77,7 +68,22 @@ match, each side must submit a valid roster before play begins. The
 - **Web developers** who want an SVG renderer or a small typed engine without
   adopting a UI framework.
 
-## Entry points
+## Features
+
+- **Five hidden-rank games**, each a typed, immutable engine: Hidden Hasami, Luzhanqi Mini, Salpakan Classic, Hidden Capture Flag and Gunjin Shogi · Club Rules, each named plainly where it adapts a traditional ruleset.
+- **Play locally.** Two people arrange their pieces privately and pass one
+  device between turns. Opposing ranks stay hidden in the player view.
+- **Build your own interface.** Pure functions create matches, validate
+  setups and moves, and produce redacted views and public replays.
+- **Choose a look.** The browser player supports English or Japanese, three
+  board materials, and two piece styles.
+- **Role-safe by design.** Views, public positions and replay records never carry a hidden rank that the rules keep from the other side; the full match is for trusted host code only.
+- **Use it anywhere.** Typed ES modules, no runtime dependencies, and no
+  framework requirement.
+
+## Use it in your project
+
+The browser player is `mountGunjin` from `@johnmorrisdotca/gunjin/play`, and the rules of each mode are in an entry of its own:
 
 | Import | Use |
 | --- | --- |
@@ -97,7 +103,9 @@ The five rulesets and their adaptations are described in
 [API reference](https://johnmorrisdotca.github.io/gunjin/api.html) and
 [docs/API.md](docs/API.md).
 
-## API at a glance
+## API
+
+Every export of every entry point is in the [API reference](https://johnmorrisdotca.github.io/gunjin/api.html), made from the source when the demo is built, and in [docs/API.md](docs/API.md). The calls you will use first:
 
 | Function | Purpose |
 | --- | --- |
@@ -115,7 +123,7 @@ send a full `AuthoritativeMatch` or trusted serialization to an opponent.
 The local browser player is intended for casual, same-device hotseat play;
 a person with access to the browser process can inspect its memory.
 
-## Player options and appearance
+## Theming
 
 `mountGunjin(element, match, options?)` accepts:
 
@@ -132,7 +140,11 @@ The returned handle provides `view()`, `replay()`, `set(options)`, and
 `language`, `material`, `pieceStyle`, `selected`, `targets`, and setup `draft`
 options. See [docs/API.md](docs/API.md) for the typed details.
 
-## Limits and information boundaries
+The player's own styles are scoped under the `.gj-root` class; its text, buttons and handoff panel take
+their colours from the page's `--kz-ink` and `--kz-paper` custom properties when the page
+sets them, so one line of CSS on a parent changes both.
+
+## Limits
 
 The browser player is local hotseat, not an online service. Trusted engine
 matches contain both sides' hidden ranks; `PlayerView`, `PublicPosition`, and
@@ -142,27 +154,63 @@ serialization is for private host storage, not encrypted storage or a
 network protocol. This package provides no matchmaking, account system, or
 remote transport.
 
+## Browser support
+
+Any current browser with SVG and ES modules: Chrome, Edge, Firefox and Safari, on a phone or a desk. The demo's tests run in Chromium and WebKit at a phone's width and a desk's, on this Mac and in the Linux image CI uses.
+
+## Languages
+
+The player's words are English and Japanese, chosen with the `language` option. Corrections to the Japanese are welcome as issues.
+
+## Roadmap
+
+The package is an engine and a same-device player, and the limits above are meant: no accounts, matchmaking or network transport. Nothing else is promised for a date; ideas are welcome in the [issues](https://github.com/johnmorrisdotca/gunjin/issues).
+
+## Architecture
+
+```text
+src/
+├── draw.ts
+├── gunjin-shogi.ts
+├── hasami.ts
+├── index-core.ts
+├── index.ts
+├── luzhanqi-mini.ts
+├── match.ts
+├── play.ts
+├── replay.ts
+├── rules/
+│   ├── board.ts
+│   ├── gunjinShogi.ts
+│   ├── hiddenHasami.ts
+│   ├── index.ts
+│   ├── luzhanqiMini.ts
+│   ├── salpakan.ts
+│   ├── strategoLite.ts
+│   └── types.ts
+├── salpakan.ts
+├── stratego-lite.ts
+├── strings.ts
+├── style.ts
+├── trusted.ts
+├── types.ts
+└── views.ts
+```
+
 ## The name
 
 *Gunjin* (軍人) is Japanese for a soldier or military person, read ぐんじん, said in three beats, *gun-ji-n*. It is
 the first word of 軍人将棋 (*gunjin shōgi*), "soldier chess", the hidden-rank Japanese army game that gives the
 package its name and one of its five modes. ([Wiktionary: 軍人](https://en.wiktionary.org/wiki/軍人).)
 
-## Development
+## Where it comes from
 
-```sh
-pnpm install
-pnpm check
-pnpm build
-pnpm site
-```
+Gunjin Shogi (軍人将棋) is the Japanese hidden-rank army game that names the package, and the other four modes are in the same family of hidden-rank games: Hasami Shogi, Luzhanqi, Salpakan and Stratego. Their rules are common property, and each mode here is written in its own words and called an adaptation wherever it departs from a traditional ruleset. The sources are listed under References in [docs/RULES.md](docs/RULES.md).
 
-See [Contributing](CONTRIBUTING.md) for the project conventions and checks.
-
-## The family
+### The family
 
 <!-- family:start (made by scripts/family-readme.mjs from scripts/family-template.mjs; change those, not this) -->
-Gunjin is one of twenty-two packages, each made for the same site, each at
+Gunjin is one of twenty-four packages, each made for the same site, each at
 [github.com/johnmorrisdotca](https://github.com/johnmorrisdotca). The code of every one is MIT.
 
 - [Korokoro](https://github.com/johnmorrisdotca/korokoro) (コロコロ): dice, with notation, exact odds, real sounds and the dice of many games. [Demo](https://johnmorrisdotca.github.io/korokoro/).
@@ -187,15 +235,34 @@ Gunjin is one of twenty-two packages, each made for the same site, each at
 - [Tobiishi](https://github.com/johnmorrisdotca/tobiishi) (飛び石): peg solitaire with nine boards and seeded solvable challenges. [Demo](https://johnmorrisdotca.github.io/tobiishi/).
 - [Jirai](https://github.com/johnmorrisdotca/jirai) (地雷): minesweeper on shaped grids with verified no-guess boards. [Demo](https://johnmorrisdotca.github.io/jirai/).
 - [Gunjin](https://github.com/johnmorrisdotca/gunjin) (軍人): five hidden-rank strategy games with pass-the-device play. [Demo](https://johnmorrisdotca.github.io/gunjin/).
+- [Karakuri](https://github.com/johnmorrisdotca/karakuri) (からくり): eight hyper-casual puzzle games, some of them physics: draw a shield, pull pins, cut ropes, slide blocks, pour tubes. [Demo](https://johnmorrisdotca.github.io/karakuri/).
+- [Houseki](https://github.com/johnmorrisdotca/houseki) (宝石): gem and stone matching puzzles: falling triplets, stone collapse, colour chains and gem swap. [Demo](https://johnmorrisdotca.github.io/houseki/).
 
-**This package is Gunjin.** The demos of all twenty-two share one header and footer, so each links the rest.
+**This package is Gunjin.** The demos of all twenty-four share one header and footer, so each links the rest.
 <!-- family:end -->
 
-## Contribution, security, and licence
+## Development
 
-Bug reports and contributions are welcome. Please read
-[CONTRIBUTING.md](CONTRIBUTING.md) and the
-[Code of Conduct](CODE_OF_CONDUCT.md). To report a security concern privately,
+```sh
+pnpm install
+pnpm check          # lint, types, tests and the presentation checks
+pnpm test:package   # pack it as npm does, install it in an empty project, import every entry
+pnpm test:demo      # build the demo and play it in a real browser, at a phone's width and a desk's
+pnpm pictures       # retake the two pictures above
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the project conventions and checks.
+
+## Contributing
+
+Bug reports and pull requests are welcome in the [issues](https://github.com/johnmorrisdotca/gunjin/issues). Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). To report a security concern privately,
 follow [SECURITY.md](SECURITY.md).
 
-Gunjin is released under the [MIT licence](LICENSE).
+## Changes
+
+Every release is written up in [CHANGELOG.md](./CHANGELOG.md).
+
+## Licence
+
+[MIT](./LICENSE) © John Morris.
