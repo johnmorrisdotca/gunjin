@@ -22,7 +22,15 @@ export function isLake(cell: Coordinate): boolean {
   return LAKES.has(`${cell.x}:${cell.y}`);
 }
 
-/** Original streamlined capture-flag rules using the published Original roster and combat table. */
+/** Original streamlined capture-flag rules using the published Original roster and combat table.
+ *
+ * @example
+ * ```ts
+ * import { STRATEGO_LITE_RULES } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * console.log(STRATEGO_LITE_RULES.mode);
+ * ```
+ */
 export const STRATEGO_LITE_RULES: ModeRules = {
   mode: "stratego-lite",
   defaultWidth: 10,
@@ -106,7 +114,18 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   };
 }
 
-/** Resolves a Capture Flag battle without mutating either piece or match. */
+/** Resolves a Capture Flag battle without mutating either piece or match.
+ *
+ * @param attacker - The native role key of the attacking piece.
+ * @param defender - The native role key of the defending piece.
+ * @returns Resolves a Capture Flag battle without mutating either piece or match.
+ * @example
+ * ```ts
+ * import { strategoCombat } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * console.log(strategoCombat("miner","bomb"));
+ * ```
+ */
 export function strategoCombat(attacker: string, defender: string): "attacker" | "defender" | "both" {
   if (defender === "flag") return "attacker";
   if (attacker === "flag") return "defender";

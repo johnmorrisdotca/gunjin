@@ -5,12 +5,49 @@ import type { AuthoritativeMatch, GameMode, Piece } from "./types.ts";
 /**
  * Host-only serialization. The returned string contains both players' secret roles;
  * never send it to a browser, another player, or a public replay endpoint.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @returns Host-only serialization. The returned string contains both players' secret roles; never send it to a browser, another player, or a public replay endpoint.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { encodeTrustedMatch } from "@johnmorrisdotca/gunjin/trusted";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(encodeTrustedMatch(ready).length);
+ * ```
  */
 export function encodeTrustedMatch(match: AuthoritativeMatch): string {
   return JSON.stringify({ version: 1, match });
 }
 
-/** Reads trusted host storage. The caller must keep the decoded match private. */
+/** Reads trusted host storage. The caller must keep the decoded match private.
+ *
+ * @param code - A trusted host record or redacted public replay, as required by this signature.
+ * @returns The trusted host state when its structural checks pass, or null for refused/unsupported storage; private roles remain.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { decodeTrustedMatch, encodeTrustedMatch } from "@johnmorrisdotca/gunjin/trusted";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(decodeTrustedMatch(encodeTrustedMatch(ready))?.phase);
+ * ```
+ */
 export function decodeTrustedMatch(code: string): AuthoritativeMatch | null {
   try {
     if (code.length > 250_000) return null;

@@ -1,13 +1,48 @@
 import type { GameMode, Player } from "./types.ts";
 
-/** Supported interface locales. */
+/** Supported interface locales.
+ *
+ * @example
+ * ```ts
+ * import type { Language } from "@johnmorrisdotca/gunjin";
+ *
+ * const value: Language = "ja";
+ * console.log(value);
+ * ```
+ */
 export type Language = "en" | "ja";
-/** Board palettes shared with the game family. */
+/** Board palettes shared with the game family.
+ *
+ * @example
+ * ```ts
+ * import type { Material } from "@johnmorrisdotca/gunjin";
+ *
+ * const value: Material = "wood";
+ * console.log(value);
+ * ```
+ */
 export type Material = "ivory" | "wood" | "slate";
-/** Available piece silhouettes. */
+/** Available piece silhouettes.
+ *
+ * @example
+ * ```ts
+ * import type { PieceStyle } from "@johnmorrisdotca/gunjin";
+ *
+ * const value: PieceStyle = "tiles";
+ * console.log(value);
+ * ```
+ */
 export type PieceStyle = "ink" | "tiles";
 
-/** English and Japanese interface labels used by the renderer and player. */
+/** English and Japanese interface labels used by the renderer and player.
+ *
+ * @example
+ * ```ts
+ * import { STRINGS } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(STRINGS.ja.title);
+ * ```
+ */
 export const STRINGS = {
   en: {
     title: "Gunjin",
@@ -123,22 +158,65 @@ export const STRINGS = {
   },
 } as const;
 
-/** Returns the localized interface string table. */
+/** Returns the localized interface string table.
+ *
+ * @param language - The native English or Japanese display language.
+ * @returns Returns the localized interface string table.
+ * @example
+ * ```ts
+ * import { words } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(words("en").title);
+ * ```
+ */
 export function words(language: Language = "en") {
   return STRINGS[language];
 }
 
-/** Returns the localized name for one side. */
+/** Returns the localized name for one side.
+ *
+ * @param language - The native English or Japanese display language.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @returns Returns the localized name for one side.
+ * @example
+ * ```ts
+ * import { playerName } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(playerName("en",0));
+ * ```
+ */
 export function playerName(language: Language, player: Player): string {
   return words(language)[player === 0 ? "red" : "blue"];
 }
 
-/** Returns the localized display name for a ruleset. */
+/** Returns the localized display name for a ruleset.
+ *
+ * @param language - The native English or Japanese display language.
+ * @param mode - The native rule-mode key.
+ * @returns Returns the localized display name for a ruleset.
+ * @example
+ * ```ts
+ * import { modeName } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(modeName("ja","hidden-hasami"));
+ * ```
+ */
 export function modeName(language: Language, mode: GameMode): string {
   return words(language).modeNames[mode];
 }
 
-/** Returns a localized piece label, with a readable fallback for unknown roles. */
+/** Returns a localized piece label, with a readable fallback for unknown roles.
+ *
+ * @param language - The native English or Japanese display language.
+ * @param role - The native role identifier to label.
+ * @returns Returns a localized piece label, with a readable fallback for unknown roles.
+ * @example
+ * ```ts
+ * import { roleName } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(roleName("ja","leader"));
+ * ```
+ */
 export function roleName(language: Language, role: string): string {
   if (language === "ja") {
     const ja: Record<string, string> = {

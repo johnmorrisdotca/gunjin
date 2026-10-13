@@ -16,7 +16,15 @@ function isEnemyHeadquarters(player: Player, cell: Coordinate): boolean {
   return cell.y === (player === 0 ? 0 : 8) && (cell.x === 3 || cell.x === 5);
 }
 
-/** The documented 31-piece club ruleset, on a plain 9×9 board. */
+/** The documented 31-piece club ruleset, on a plain 9×9 board.
+ *
+ * @example
+ * ```ts
+ * import { GUNJIN_SHOGI_RULES } from "@johnmorrisdotca/gunjin/gunjin-shogi";
+ *
+ * console.log(GUNJIN_SHOGI_RULES.mode);
+ * ```
+ */
 export const GUNJIN_SHOGI_RULES: ModeRules = {
   mode: "gunjin-shogi",
   defaultWidth: 9,
@@ -97,7 +105,18 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   return { pieces, captured: [defender], movedPiece: { ...attacker, ...destination } };
 }
 
-/** Resolves a club-rules Gunjin Shogi battle without mutating match state. A piece that attacks a flag takes it, and wins; a flag that attacks anything else is removed with it. */
+/** Resolves a club-rules Gunjin Shogi battle without mutating match state. A piece that attacks a flag takes it, and wins; a flag that attacks anything else is removed with it.
+ *
+ * @param attacker - The native role key of the attacking piece.
+ * @param defender - The native role key of the defending piece.
+ * @returns Resolves a club-rules Gunjin Shogi battle without mutating match state. A piece that attacks a flag takes it, and wins; a flag that attacks anything else is removed with it.
+ * @example
+ * ```ts
+ * import { gunjinCombat } from "@johnmorrisdotca/gunjin/gunjin-shogi";
+ *
+ * console.log(gunjinCombat("engineer","mine"));
+ * ```
+ */
 export function gunjinCombat(attacker: string, defender: string): "attacker" | "defender" | "both" {
   if (defender === "flag") return "attacker";
   if (attacker === defender) return "both";

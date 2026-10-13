@@ -4,7 +4,16 @@ import type { Coordinate, PlayerView } from "./types.ts";
 import type { Language, Material, PieceStyle } from "./strings.ts";
 import type { SetupPiece } from "./rules/types.ts";
 
-/** Visual settings and temporary selection marks for the role-redacted SVG renderer. */
+/** Visual settings and temporary selection marks for the role-redacted SVG renderer.
+ *
+ * @example
+ * ```ts
+ * import type { DrawOptions } from "@johnmorrisdotca/gunjin/draw";
+ *
+ * const value: DrawOptions = {language:"ja",material:"wood",pieceStyle:"tiles",selected:null};
+ * console.log(value);
+ * ```
+ */
 export type DrawOptions = {
   language?: Language;
   material?: Material;
@@ -14,7 +23,28 @@ export type DrawOptions = {
   draft?: readonly SetupPiece[];
 };
 
-/** Draws only a redacted player view. Enemy identities never enter this renderer. */
+/** Draws only a redacted player view. Enemy identities never enter this renderer.
+ *
+ * @param view - A role-redacted native player view; opponent identities are omitted.
+ * @param options - Optional language, material, piece style and temporary native selection/draft marks.
+ * @returns SVG text made only from the redacted player view and the supplied presentation settings.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { drawGunjinBoard } from "@johnmorrisdotca/gunjin/draw";
+ * import { viewForPlayer } from "@johnmorrisdotca/gunjin/views";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(drawGunjinBoard(viewForPlayer(ready,0),{language:"ja",material:"wood"}).startsWith("<svg"));
+ * ```
+ */
 export function drawGunjinBoard(view: PlayerView, options: DrawOptions = {}): string {
   const cellSize = 52;
   const language = options.language ?? "en";

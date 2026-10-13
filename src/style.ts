@@ -1,4 +1,12 @@
-/** Scoped presentation styles applied by the hotseat mount. */
+/** Scoped presentation styles applied by the hotseat mount.
+ *
+ * @example
+ * ```ts
+ * import { GUNJIN_STYLE } from "@johnmorrisdotca/gunjin";
+ *
+ * console.log(GUNJIN_STYLE.length);
+ * ```
+ */
 export const GUNJIN_STYLE = `
 .gj-root{font:1rem/1.45 system-ui,sans-serif;color:var(--kz-ink,#202521);max-width:62rem;margin:auto}
 .gj-board{position:relative;width:min(100%,42rem);margin:1rem auto;outline:none}

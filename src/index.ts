@@ -1,4 +1,5 @@
 /** SVG board rendering and its optional visual settings. */
+
 export { drawGunjinBoard } from "./draw.ts";
 export type { DrawOptions } from "./draw.ts";
 /** Accessible hotseat player and lifecycle handle. */

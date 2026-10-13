@@ -1,7 +1,26 @@
 import type { AuthoritativeMatch, MatchResult, PublicReplay, PublicEvent } from "./types.ts";
 import { MODE_RULES } from "./rules/index.ts";
 
-/** Creates a public replay with only combat ranks that the selected rules expose. */
+/** Creates a public replay with only combat ranks that the selected rules expose.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @returns Creates a public replay with only combat ranks that the selected rules expose.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { publicReplay } from "@johnmorrisdotca/gunjin";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(publicReplay(ready));
+ * ```
+ */
 export function publicReplay(match: AuthoritativeMatch): PublicReplay {
   return {
     version: 1,
@@ -24,12 +43,50 @@ export function publicReplay(match: AuthoritativeMatch): PublicReplay {
   };
 }
 
-/** Serializes the role-free public replay record as JSON. */
+/** Serializes the role-redacted public replay record as JSON.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @returns Serializes the role-redacted public replay record as JSON.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { encodePublicReplay } from "@johnmorrisdotca/gunjin";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(encodePublicReplay(ready));
+ * ```
+ */
 export function encodePublicReplay(match: AuthoritativeMatch): string {
   return JSON.stringify(publicReplay(match));
 }
 
-/** Validates a role-free replay record for display; it cannot resume a match. */
+/** Validates a role-free replay record for display; it cannot resume a match.
+ *
+ * @param code - A trusted host record or redacted public replay, as required by this signature.
+ * @returns The structurally validated role-redacted public replay, or null for invalid/unsupported data.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { decodePublicReplay, encodePublicReplay } from "@johnmorrisdotca/gunjin";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(decodePublicReplay(encodePublicReplay(ready))?.mode);
+ * ```
+ */
 export function decodePublicReplay(code: string): PublicReplay | null {
   try {
     if (code.length > 200_000) return null;

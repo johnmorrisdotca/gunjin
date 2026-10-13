@@ -12,7 +12,18 @@ import type {
 import type { Piece } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
 
-/** Creates an authoritative match. Keep this state on a trusted host. */
+/** Creates an authoritative match. Keep this state on a trusted host.
+ *
+ * @param mode - The native rule-mode key.
+ * @param size - A supported board size; Hasami accepts 7 or 9 square holes per side.
+ * @returns Creates an authoritative match. Keep this state on a trusted host.
+ * @example
+ * ```ts
+ * import { createMatch } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * console.log(createMatch("gunjin-shogi").phase);
+ * ```
+ */
 export function createMatch(
   mode: GameMode,
   size: SetupSize = {},
@@ -37,7 +48,20 @@ export function createMatch(
   };
 }
 
-/** The private roster for the player currently arranging their side. */
+/** The private roster for the player currently arranging their side.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @returns The private roster for the player currently arranging their side.
+ * @example
+ * ```ts
+ * import { createHasamiMatch } from "@johnmorrisdotca/gunjin/hasami";
+ * import { rosterForSetup } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const base=createHasamiMatch({width:7,height:7});
+ * console.log(rosterForSetup(base,0));
+ * ```
+ */
 export function rosterForSetup(
   match: AuthoritativeMatch,
   player: Player,
@@ -45,7 +69,24 @@ export function rosterForSetup(
   return MODE_RULES[match.mode].roster(player, match.width, match.height);
 }
 
-/** Submits one player's hidden setup and then shows a pass-device screen. */
+/** Submits one player's hidden setup and then shows a pass-device screen.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param placements - A complete native roster placed in this mode’s allowed home cells.
+ * @param expectedSetupStep - The setup step seen by the caller, used to reject stale submissions.
+ * @returns Submits one player's hidden setup and then shows a pass-device screen.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster } from "@johnmorrisdotca/gunjin/hasami";
+ * import { submitSetup } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * console.log(submitSetup(base,0,home(0),base.setupStep).phase);
+ * ```
+ */
 export function submitSetup(
   match: AuthoritativeMatch,
   player: Player,
@@ -94,7 +135,24 @@ export function submitSetup(
   };
 }
 
-/** Confirms that the device has passed to the player named on the cover screen. */
+/** Confirms that the device has passed to the player named on the cover screen.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param expectedTurn - The turn seen by the caller, used to reject stale or out-of-turn requests.
+ * @returns Confirms that the device has passed to the player named on the cover screen.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * console.log(acknowledgePass(firstSetup,1,firstSetup.turn).phase);
+ * ```
+ */
 export function acknowledgePass(
   match: AuthoritativeMatch,
   player: Player,
@@ -123,7 +181,29 @@ export function acknowledgePass(
   };
 }
 
-/** Current-player moves with deterministic stale-turn rejection. */
+/** Current-player moves with deterministic stale-turn rejection.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param action - Native source/destination coordinates and the caller’s expected turn.
+ * @returns Current-player moves with deterministic stale-turn rejection.
+ * @example
+ * ```ts
+ * import type { MoveAction, Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass, playMove } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { legalMovesForCurrentPlayer } from "@johnmorrisdotca/gunjin/views";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * const action: MoveAction={...legalMovesForCurrentPlayer(ready,0)[0]!,expectedTurn:ready.turn};
+ * console.log(playMove(ready,0,action).phase);
+ * ```
+ */
 export function playMove(
   match: AuthoritativeMatch,
   player: Player,
@@ -194,7 +274,27 @@ export function playMove(
   return next;
 }
 
-/** Resignation is public and ends the active player's match. */
+/** Resignation is public and ends the active player's match.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param expectedTurn - The turn seen by the caller, used to reject stale or out-of-turn requests.
+ * @returns Resignation is public and ends the active player's match.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass, resignMatch } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(resignMatch(ready,0,ready.turn).result);
+ * ```
+ */
 export function resignMatch(
   match: AuthoritativeMatch,
   player: Player,
@@ -206,7 +306,27 @@ export function resignMatch(
   return finish(match, { winner: (1 - player) as Player, reason: "resigned" });
 }
 
-/** Offers a draw; the other player must accept it on their turn. */
+/** Offers a draw; the other player must accept it on their turn.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param expectedTurn - The turn seen by the caller, used to reject stale or out-of-turn requests.
+ * @returns Offers a draw; the other player must accept it on their turn.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass, offerDraw } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(offerDraw(ready,0,ready.turn).phase);
+ * ```
+ */
 export function offerDraw(
   match: AuthoritativeMatch,
   player: Player,
@@ -227,7 +347,29 @@ export function offerDraw(
   };
 }
 
-/** Accepts the other player's pending draw offer using the current turn token. */
+/** Accepts the other player's pending draw offer using the current turn token.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param expectedTurn - The turn seen by the caller, used to reject stale or out-of-turn requests.
+ * @returns Accepts the other player's pending draw offer using the current turn token.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acceptDraw, acknowledgePass, offerDraw } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * const offered=offerDraw(ready,0,ready.turn);
+ * const received=acknowledgePass(offered,1,offered.turn);
+ * console.log(acceptDraw(received,1,received.turn).result);
+ * ```
+ */
 export function acceptDraw(
   match: AuthoritativeMatch,
   player: Player,
@@ -244,7 +386,29 @@ export function acceptDraw(
   return finish(match, { winner: null, reason: "agreed-draw" });
 }
 
-/** Makes a declined draw offer available again to the moving player. */
+/** Makes a declined draw offer available again to the moving player.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @param expectedTurn - The turn seen by the caller, used to reject stale or out-of-turn requests.
+ * @returns Makes a declined draw offer available again to the moving player.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass, declineDraw, offerDraw } from "@johnmorrisdotca/gunjin/stratego-lite";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * const offered=offerDraw(ready,0,ready.turn);
+ * const received=acknowledgePass(offered,1,offered.turn);
+ * console.log(declineDraw(received,1,received.turn).drawOffer);
+ * ```
+ */
 export function declineDraw(
   match: AuthoritativeMatch,
   player: Player,

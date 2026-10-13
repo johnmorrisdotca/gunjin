@@ -19,7 +19,16 @@ import type { AuthoritativeMatch, Coordinate, Player, PublicPosition } from "./t
 import type { SetupPiece } from "./rules/types.ts";
 import type { Language, Material, PieceStyle } from "./strings.ts";
 
-/** Locale, materials, and safe public callbacks for a mounted hotseat player. */
+/** Locale, materials, and safe public callbacks for a mounted hotseat player.
+ *
+ * @example
+ * ```ts
+ * import type { MountOptions } from "@johnmorrisdotca/gunjin/play";
+ *
+ * const value: MountOptions = {language:"ja",material:"ivory",onChange:position=>console.log(position.phase)};
+ * console.log(value);
+ * ```
+ */
 export type MountOptions = {
   language?: Language;
   material?: Material;
@@ -28,7 +37,22 @@ export type MountOptions = {
   onFinish?: (result: { winner: Player | null; reason: string }) => void;
 };
 
-/** Public controls returned by {@link mountGunjin}; no authoritative state is exposed. */
+/** Public controls returned by {@link mountGunjin}; no authoritative state is exposed.
+ *
+ * @example
+ * ```ts no-run
+ * import { createHasamiMatch } from "@johnmorrisdotca/gunjin/hasami";
+ * import type { GunjinMount } from "@johnmorrisdotca/gunjin/play";
+ * import { mountGunjin } from "@johnmorrisdotca/gunjin/play";
+ *
+ * const base=createHasamiMatch({width:7,height:7});
+ * const host=document.createElement("div");
+ * document.body.append(host);
+ * const mounted: GunjinMount=mountGunjin(host,base,{language:"ja"});
+ * console.log(mounted.view().phase);
+ * mounted.destroy();
+ * ```
+ */
 export type GunjinMount = {
   view: () => ReturnType<typeof viewForPlayer>;
   replay: () => string;
@@ -36,7 +60,25 @@ export type GunjinMount = {
   destroy: () => void;
 };
 
-/** Mounts a hotseat player. Only redacted views and replay data leave this handle. */
+/** Mounts a hotseat player. Only redacted views and replay data leave this handle.
+ *
+ * @param host - The real HTMLElement that owns this independent native hotseat player.
+ * @param initial - The initial authoritative match, kept inside the local hotseat player.
+ * @param initialOptions - Native language, material, piece style and redacted callbacks.
+ * @returns The independent hotseat handle exposing redacted view/replay, presentation updates and cleanup.
+ * @example
+ * ```ts no-run
+ * import { createHasamiMatch } from "@johnmorrisdotca/gunjin/hasami";
+ * import { mountGunjin } from "@johnmorrisdotca/gunjin/play";
+ *
+ * const base=createHasamiMatch({width:7,height:7});
+ * const host=document.createElement("div");
+ * document.body.append(host);
+ * const mounted=mountGunjin(host,base,{language:"ja"});
+ * console.log(mounted.view().phase);
+ * mounted.destroy();
+ * ```
+ */
 export function mountGunjin(
   host: HTMLElement,
   initial: AuthoritativeMatch,

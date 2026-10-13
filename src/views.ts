@@ -11,7 +11,27 @@ import type {
   ViewedPiece,
 } from "./types.ts";
 
-/** A player view redacts opponent roles and suppresses the board during device handoff. */
+/** A player view redacts opponent roles and suppresses the board during device handoff.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param viewer - The player, 0 or 1, whose own roles may be included in this view.
+ * @returns The player view; pieces are null during setup/pass, ownSetup is null outside setup, and opponent kinds are null.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { viewForPlayer } from "@johnmorrisdotca/gunjin/views";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(viewForPlayer(ready,0).pieces?.find(piece=>piece.owner===1));
+ * ```
+ */
 export function viewForPlayer(
   match: AuthoritativeMatch,
   viewer: Player,
@@ -53,7 +73,26 @@ export function viewForPlayer(
   };
 }
 
-/** Redacted position for spectators: only player ownership and occupied cells are returned. */
+/** Redacted position for spectators: only player ownership and occupied cells are returned.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @returns The role-free observer position; pieces are null during setup and pass-device phases.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { publicPosition } from "@johnmorrisdotca/gunjin/views";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(publicPosition(ready).pieces?.[0]);
+ * ```
+ */
 export function publicPosition(match: AuthoritativeMatch): PublicPosition {
   return {
     mode: match.mode,
@@ -72,7 +111,27 @@ function safeResult(result: MatchResult): MatchResult {
   return { winner: result.winner, reason: result.reason };
 }
 
-/** Legal move coordinates for the player whose turn it is; roles are never returned. */
+/** Legal move coordinates for the player whose turn it is; roles are never returned.
+ *
+ * @param match - The full authoritative match, held by a trusted host or the local hotseat owner.
+ * @param player - The acting player, 0 or 1; the lifecycle checks that this is the expected player.
+ * @returns Legal move coordinates for the player whose turn it is; roles are never returned.
+ * @example
+ * ```ts
+ * import type { Player } from "@johnmorrisdotca/gunjin";
+ * import { createHasamiMatch, hasamiRoster, submitHasamiSetup } from "@johnmorrisdotca/gunjin/hasami";
+ * import { acknowledgePass } from "@johnmorrisdotca/gunjin/stratego-lite";
+ * import { legalMovesForCurrentPlayer } from "@johnmorrisdotca/gunjin/views";
+ *
+ * const home=(player: Player)=>hasamiRoster(7).map((kind,x)=>({kind,x,y:player===0?6:0}));
+ * const base=createHasamiMatch({width:7,height:7});
+ * const firstSetup=submitHasamiSetup(base,0,home(0),base.setupStep);
+ * let ready=acknowledgePass(firstSetup,1,firstSetup.turn);
+ * ready=submitHasamiSetup(ready,1,home(1),ready.setupStep);
+ * ready=acknowledgePass(ready,0,ready.turn);
+ * console.log(legalMovesForCurrentPlayer(ready,0).length);
+ * ```
+ */
 export function legalMovesForCurrentPlayer(
   match: AuthoritativeMatch,
   player: Player,
@@ -87,7 +146,19 @@ export function legalMovesForCurrentPlayer(
     })));
 }
 
-/** Public board markings (camps, headquarters and lakes), with no role-dependent information. */
+/** Public board markings (camps, headquarters and lakes), with no role-dependent information.
+ *
+ * @param mode - The native rule-mode key.
+ * @param width - The native board width in holes.
+ * @param height - The native board height in holes.
+ * @returns Public board markings (camps, headquarters and lakes), with no role-dependent information.
+ * @example
+ * ```ts
+ * import { boardFeatures } from "@johnmorrisdotca/gunjin/views";
+ *
+ * console.log(boardFeatures("luzhanqi-mini",7,8));
+ * ```
+ */
 export function boardFeatures(
   mode: AuthoritativeMatch["mode"],
   width: number,
