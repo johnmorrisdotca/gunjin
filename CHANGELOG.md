@@ -5,6 +5,8 @@ All notable changes to this project are written here. The format follows
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+- Add the bilingual documentation site, checked public examples, paired guides, local search and machine-readable pages.
 ### Added
 
 - Share a package-independent embed builder for option controls, preview adapters, code tabs and shareable links.

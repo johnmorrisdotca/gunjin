@@ -20,10 +20,11 @@ let mounted;
 const pageLanguage = familyLanguage({
   id: "gunjin",
   words: {
-      en: { pitch: "Five hidden-rank strategy games for two people sharing one device.", name: "Gunjin (軍人) is Japanese for a soldier, and the first word of Gunjin Shogi, soldier chess.", nameLink: "About the name", pageRules: "Rules", pageApi: "API", foot: "Play together, one device at a time.", family: "Part of the family", licence: "MIT licence", help: "Help", helpTip: "Show explanations for settings.", mode: "Game", boardSize: "Board", language: "Language", material: "Board material", pieceStyle: "Piece style", newMatch: "New game", rules: "Rules", allRules: "Read the full rules", modeHasami: "Hidden Hasami", modeLuzhanqi: "Luzhanqi Mini", modeSalpakan: "Salpakan Classic", modeStratego: "Hidden Capture Flag", modeGunjinShogi: "Gunjin Shogi · Club Rules" },
-    ja: { pitch: "一台の端末を二人で使う、階級を隠す五つの対戦ゲームです。", name: "「軍人」は兵士のことで、軍人将棋の最初の言葉です。", nameLink: "名前について", pageRules: "ルール", pageApi: "API", foot: "一台の端末で一緒に遊べます。", family: "ファミリー", licence: "MITライセンス", help: "説明", helpTip: "設定の説明を表示します。", mode: "ゲーム", boardSize: "盤の大きさ", language: "言語", material: "盤の素材", pieceStyle: "駒の形", newMatch: "新しい対局", rules: "ルール", allRules: "ルールを読む", modeHasami: "隠し挟み将棋", modeLuzhanqi: "陸戦棋ミニ", modeSalpakan: "サルパカン・クラシック", modeStratego: "隠し旗取り", modeGunjinShogi: "軍人将棋・将棋部ルール" },
+      en: { pitch: "Five hidden-rank strategy games for two people sharing one device.", name: "Gunjin (軍人) is Japanese for a soldier, and the first word of Gunjin Shogi, soldier chess.", nameLink: "About the name", pageRules: "Rules", pageDocs: "Docs", pageApi: "API", foot: "Play together, one device at a time.", family: "Part of the family", licence: "MIT licence", help: "Help", helpTip: "Show explanations for settings.", mode: "Game", boardSize: "Board", language: "Language", material: "Board material", pieceStyle: "Piece style", newMatch: "New game", rules: "Rules", allRules: "Read the full rules", modeHasami: "Hidden Hasami", modeLuzhanqi: "Luzhanqi Mini", modeSalpakan: "Salpakan Classic", modeStratego: "Hidden Capture Flag", modeGunjinShogi: "Gunjin Shogi · Club Rules" },
+    ja: { pitch: "一台の端末を二人で使う、階級を隠す五つの対戦ゲームです。", name: "「軍人」は兵士のことで、軍人将棋の最初の言葉です。", nameLink: "名前について", pageRules: "ルール", pageDocs: "ドキュメント", pageApi: "API", foot: "一台の端末で一緒に遊べます。", family: "ファミリー", licence: "MITライセンス", help: "説明", helpTip: "設定の説明を表示します。", mode: "ゲーム", boardSize: "盤の大きさ", language: "言語", material: "盤の素材", pieceStyle: "駒の形", newMatch: "新しい対局", rules: "ルール", allRules: "ルールを読む", modeHasami: "隠し挟み将棋", modeLuzhanqi: "陸戦棋ミニ", modeSalpakan: "サルパカン・クラシック", modeStratego: "隠し旗取り", modeGunjinShogi: "軍人将棋・将棋部ルール" },
   },
   onChange: language => {
+    docsLink(language);
     controls.language.value = language;
     mounted?.set({ language });
   },
@@ -71,3 +72,6 @@ for (const control of [controls.language, controls.material, controls.pieceStyle
 controls.language.value = pageLanguage.lang;
 syncControls();
 start();
+
+function docsLink(language){document.querySelector('[data-say="pageDocs"]')?.setAttribute("href",language==="ja"?"docs/ja/index.html":"docs/index.html");}
+docsLink(pageLanguage.lang);

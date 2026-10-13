@@ -1,4 +1,4 @@
-<h1 align="center">Gunjin <sub>軍人</sub></h1>
+<h1 align="center">Gunjin <sub>軍人</sub> — Hidden-rank strategy games</h1>
 
 <p align="center"><strong>Five hidden-rank strategy games, played face to face on one device.</strong><br>
 A typed, immutable game engine and a private pass-the-device browser player, in English and Japanese.</p>
@@ -9,9 +9,11 @@ A typed, immutable game engine and a private pass-the-device browser player, in 
   <a href="./LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-2f5d4a"></a>
   <img alt="No runtime dependencies" src="https://img.shields.io/badge/runtime%20dependencies-0-2f5d4a">
   <img alt="TypeScript" src="https://img.shields.io/badge/types-TypeScript-3178c6">
+  <a href="https://johnmorrisdotca.github.io/gunjin/docs/api/main/index.html"><img alt="12.8 kB minified and gzipped" src="https://img.shields.io/badge/min%2Bgzip-12.8%20kB-2f5d4a"></a>
+  <a href="https://www.npmjs.com/package/@johnmorrisdotca/gunjin#provenance"><img alt="Published with npm provenance" src="https://img.shields.io/badge/npm-provenance-2f5d4a"></a>
 </p>
 
-<p align="center"><a href="https://johnmorrisdotca.github.io/gunjin/"><strong>Play the demo →</strong></a> · <a href="https://johnmorrisdotca.github.io/gunjin/api.html">API reference</a> · <a href="docs/RULES.md">Rules and adaptations</a></p>
+<p align="center"><a href="https://johnmorrisdotca.github.io/gunjin/"><strong>Play the demo →</strong></a> · <a href="https://johnmorrisdotca.github.io/gunjin/docs/">Documentation</a> · <a href="https://johnmorrisdotca.github.io/gunjin/docs/guides/getting-started.html">Getting started</a> · <a href="https://johnmorrisdotca.github.io/gunjin/api.html">API reference</a> · <a href="docs/RULES.md">Rules and adaptations</a></p>
 
 <table align="center">
 <tr>
@@ -178,6 +180,17 @@ Each picture is a real game, drawn by the package, taken from [the demo](https:/
 ## Use it in your project
 
 Gunjin is two things, each usable without the other: **the engine** (matches, setups, moves, views and replays, as pure functions over plain values) and **the player** (an SVG board and a pass-the-device screen, in one call). The table under [API](#entry-points) says which entry holds which.
+
+### Install under another name
+
+```sh
+npm install stratego-like@npm:@johnmorrisdotca/gunjin
+```
+
+```ts no-check
+import { GUNJIN_STYLE } from "stratego-like";
+console.log(GUNJIN_STYLE.length);
+```
 
 ### Install
 
@@ -549,6 +562,8 @@ What is hidden differs too. In four of the games a battle tells the other side n
 
 ## API
 
+The [documentation](https://johnmorrisdotca.github.io/gunjin/docs/) provides paired guides, local search and checked examples. The [API index](https://johnmorrisdotca.github.io/gunjin/api.html) retains export anchors.
+
 The [API reference](https://johnmorrisdotca.github.io/gunjin/api.html) lists every export of every entry point with its signature and its doc comment. It is made from the source by `pnpm site`, so it cannot fall behind the code, and the same information is in [docs/API.md](docs/API.md).
 
 ### Entry points
@@ -647,36 +662,7 @@ The package is an engine and a same-device player, and the limits above are mean
 
 ## Architecture
 
-```text
-src/
-├── draw.ts
-├── gunjin-shogi.ts
-├── hasami.ts
-├── index-core.ts
-├── index.ts
-├── luzhanqi-mini.ts
-├── match.ts
-├── play.ts
-├── replay.ts
-├── rules/
-│   ├── board.ts
-│   ├── gunjinShogi.ts
-│   ├── hiddenHasami.ts
-│   ├── index.ts
-│   ├── luzhanqiMini.ts
-│   ├── salpakan.ts
-│   ├── strategoLite.ts
-│   └── types.ts
-├── salpakan.ts
-├── stratego-lite.ts
-├── strings.ts
-├── style.ts
-├── trusted.ts
-├── types.ts
-└── views.ts
-```
-
-The engine is `match.ts` and the five modules under `rules/`: each rule module says what a mode's board is, what its roster is, where a piece may go and how a fight ends, and `match.ts` is the one lifecycle that applies them. The entry files at the top are thin: they re-export a mode's calls under its own names. `views.ts` and `replay.ts` are the only code that decides what may be seen, and `draw.ts` and `play.ts` take only what they produce.
+The five rule modules, shared lifecycle and redacted rendering are explained in the [architecture guide](docs/guides/architecture.md), with the complete source tree and original description preserved there.
 
 ## The name
 
@@ -757,6 +743,8 @@ Gunjin is one of twenty-eight packages, each made for the same site, each at
 pnpm install
 pnpm check          # lint, types, tests and the presentation checks
 pnpm test:package   # pack it as npm does, install it in an empty project, import every entry
+pnpm docs:check       # typecheck and run API and guide examples
+pnpm docs:site        # build the docs and local search index
 pnpm test:demo      # build the demo and play it in a real browser, at a phone's width and a desk's
 pnpm screenshots:readme  # retake the README's pictures (docs/images) from the built demo, in light and dark
 pnpm test:readme    # run every ts and js example in this README against the built package

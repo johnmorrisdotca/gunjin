@@ -22,3 +22,6 @@ main { max-width: 1120px; margin: 0 auto; padding: 1rem; }
 @media (max-width: 560px) { main { padding: .65rem; } .controls { display: grid; grid-template-columns: 1fr 1fr; } .controls label { min-width: 0; } .panel { padding: .45rem; } }
 
 .fam-felt .gj-status, .fam-felt .gj-setup-count { color: var(--felt-ink); }
+
+/* Keep navigation width stable across languages. */
+header nav a[data-say="pageDocs"] { inline-size: 8rem; justify-content: center; flex: none; }

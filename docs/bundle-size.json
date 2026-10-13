@@ -1,0 +1,45 @@
+{
+  "measured": "esbuild 0.28.2, bundled, minified, ES2020, gzip level 9",
+  "entries": {
+    ".": {
+      "minified": 40085,
+      "gzip": 12770
+    },
+    "./hasami": {
+      "minified": 15900,
+      "gzip": 4582
+    },
+    "./luzhanqi-mini": {
+      "minified": 15897,
+      "gzip": 4580
+    },
+    "./salpakan": {
+      "minified": 15871,
+      "gzip": 4577
+    },
+    "./stratego-lite": {
+      "minified": 17340,
+      "gzip": 4865
+    },
+    "./gunjin-shogi": {
+      "minified": 17028,
+      "gzip": 4825
+    },
+    "./trusted": {
+      "minified": 14465,
+      "gzip": 4019
+    },
+    "./views": {
+      "minified": 14658,
+      "gzip": 4021
+    },
+    "./draw": {
+      "minified": 11977,
+      "gzip": 4701
+    },
+    "./play": {
+      "minified": 37907,
+      "gzip": 12134
+    }
+  }
+}
