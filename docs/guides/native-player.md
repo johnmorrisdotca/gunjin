@@ -19,7 +19,3 @@ board.destroy();
 ```
 
 The handle exposes redacted views/replay, presentation updates and cleanup. Change/finish callbacks receive public data rather than a full authoritative match. The local hotseat player internally owns both sides and uses the handoff screen to manage shared-device privacy. A competitive remote host needs its own authenticated state boundary.
-
-## Retain the existing adoption scope
-
-This rollout adds Docs before API while retaining the Rules link and native player. Initial/live English/Japanese selection chooses the matching docs page. Native iframe/custom-element embed adoption remains deferred by the family standard; no new builder or competing engine is introduced.

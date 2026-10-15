@@ -3,43 +3,43 @@
   "entries": {
     ".": {
       "minified": 40085,
-      "gzip": 12770
+      "gzip": 12899
     },
     "./hasami": {
       "minified": 15900,
-      "gzip": 4582
+      "gzip": 4600
     },
     "./luzhanqi-mini": {
       "minified": 15897,
-      "gzip": 4580
+      "gzip": 4600
     },
     "./salpakan": {
       "minified": 15871,
-      "gzip": 4577
+      "gzip": 4595
     },
     "./stratego-lite": {
       "minified": 17340,
-      "gzip": 4865
+      "gzip": 4880
     },
     "./gunjin-shogi": {
       "minified": 17028,
-      "gzip": 4825
+      "gzip": 4844
     },
     "./trusted": {
       "minified": 14465,
-      "gzip": 4019
+      "gzip": 4040
     },
     "./views": {
       "minified": 14658,
-      "gzip": 4021
+      "gzip": 4054
     },
     "./draw": {
       "minified": 11977,
-      "gzip": 4701
+      "gzip": 4772
     },
     "./play": {
       "minified": 37907,
-      "gzip": 12134
+      "gzip": 12255
     }
   }
 }

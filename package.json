@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/gunjin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Gunjin 軍人 — Hidden-rank strategy games: five immutable engines, private setups, player/observer views, redacted replay and accessible English/Japanese pass-the-device play. Zero runtime dependencies.",
   "keywords": [
     "accessible",

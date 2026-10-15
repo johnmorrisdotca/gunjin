@@ -40,4 +40,4 @@ The engine is `match.ts` and the five modules under `rules/`: each rule module s
 
 ## Documentation
 
-The shared generator reads public TypeScript declarations and checks native examples. It creates paired references/guides, Markdown twins, llms files and a local search index. The rollout does not alter rosters, combat, host storage checks or view redaction.
+The shared generator reads public TypeScript declarations and checks native examples. It creates paired references/guides, Markdown twins, llms files and a local search index.

@@ -2,7 +2,7 @@
 title: 端末を渡し、古い操作を受け付けない
 section: how-to
 order: 3
-description: setupStep と turn を標準の対局の流れで使います。
+description: setupStepとturnを標準の対局の流れで使います。
 ---
 
 ## 見た手番を付けて移動する
@@ -23,8 +23,8 @@ match=playHasamiMove(match,0,{...move,expectedTurn:match.turn});
 console.log(match.phase,match.currentPlayer);
 ```
 
-配置には `expectedSetupStep`、移動や受け渡し、終了の操作には `expectedTurn` を使います。古い操作や違う側の操作は、標準の RangeError です。番号は遅れて届いた操作を取り除くためで、本人の確認はホスト側で行います。
+配置には`expectedSetupStep`、移動や受け渡し、終了の操作には`expectedTurn`を使います。古い操作や違う側の操作は、標準のRangeErrorです。番号は遅れて届いた操作を取り除くためで、本人の確認はホスト側で行います。
 
 ## 受け渡しの画面を保つ
 
-`pass` は、端末を渡す間、盤を隠します。次の側に盤を見せる前に、そのプレイヤーで `acknowledgePass` を呼びます。5つのゲームは、この流れを共有します。言語や素材を変えても、対局を作り直しません。標準のプレイヤーも、同じ流れを使います。
+`pass`は、端末を渡す間、盤を隠します。次の側に盤を見せる前に、そのプレイヤーで`acknowledgePass`を呼びます。5つのゲームは、この流れを共有します。言語や素材を変えても、対局を作り直しません。標準のプレイヤーも、同じ流れを使います。

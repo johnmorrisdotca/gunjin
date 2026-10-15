@@ -23,4 +23,4 @@ console.log(match.phase,match.currentPlayer,match.setupStep);
 
 ## 公開する入口を選ぶ
 
-規則にはゲームの入口を使います。`/views` はプレイヤーや観戦者の表示、`/draw` は SVG、`/play` は同じ端末で交代するプレイヤーです。`/trusted` はホストの保存です。主な入口の公開再生は、非公開の情報を取り除いた別の記録です。[表示](redacted-views.md)と[標準のプレイヤー](native-player.md)も参照してください。
+規則にはゲームの入口を使います。`/views`はプレイヤーや観戦者の表示、`/draw`はSVG、`/play`は同じ端末で交代するプレイヤーです。`/trusted`はホストの保存です。主な入口の公開再生は、非公開の情報を取り除いた別の記録です。[表示](redacted-views.md)と[標準のプレイヤー](native-player.md)も参照してください。

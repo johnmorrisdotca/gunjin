@@ -22,7 +22,7 @@ console.log(decodePublicReplay(encodePublicReplay(match))?.mode);
 console.log(decodeTrustedMatch(encodeTrustedMatch(match))?.phase);
 ```
 
-公開再生は、非公開の配置と駒の ID を除き、規則が公開する戦闘の階級だけを保ちます。ホストの保存には、秘密の階級を含む完全な状態があります。形式を取り違えないでください。どちらも、受け付けない形式や未対応の版は null です。
+公開再生は、非公開の配置と駒のIDを除き、規則が公開する戦闘の階級だけを保ちます。ホストの保存には、秘密の階級を含む完全な状態があります。形式を取り違えないでください。どちらも、受け付けない形式や未対応の版はnullです。
 
 ## 検証の範囲を確かめる
 
