@@ -1,6 +1,7 @@
-import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
+import { expect, test } from "@playwright/test";
 import { servePages } from "./serve.mjs";
+
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const id = pkg.name.split("/")[1];
 test("the API reference covers every entry and fits a phone", async ({ page }) => {

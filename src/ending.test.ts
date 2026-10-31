@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as gunjinShogiEntry from "./gunjin-shogi.ts";
+import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
 import * as strategoLiteEntry from "./stratego-lite.ts";
 import {
   acceptDraw,
@@ -12,10 +13,9 @@ import {
   rosterForSetup,
   submitSetup,
 } from "./stratego-lite.ts";
-import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
 import { decodeTrustedMatch, encodeTrustedMatch } from "./trusted.ts";
-import { publicPosition, viewForPlayer } from "./views.ts";
 import type { AuthoritativeMatch, GameMode, Player } from "./types.ts";
+import { publicPosition, viewForPlayer } from "./views.ts";
 
 const range = (from: number, count: number) => Array.from({ length: count }, (_, at) => from + at);
 

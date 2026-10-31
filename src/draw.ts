@@ -1,8 +1,8 @@
-import { boardFeatures } from "./views.ts";
+import type { SetupPiece } from "./rules/types.ts";
+import type { Language, Material, PieceStyle } from "./strings.ts";
 import { roleName, words } from "./strings.ts";
 import type { Coordinate, PlayerView } from "./types.ts";
-import type { Language, Material, PieceStyle } from "./strings.ts";
-import type { SetupPiece } from "./rules/types.ts";
+import { boardFeatures } from "./views.ts";
 
 /** Visual settings and temporary selection marks for the role-redacted SVG renderer.
  *

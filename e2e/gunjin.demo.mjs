@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { servePages } from "./serve.mjs";
 
 const ROOT = "gunjin";

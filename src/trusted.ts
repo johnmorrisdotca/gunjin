@@ -1,5 +1,5 @@
-import { MODE_RULES } from "./rules/index.ts";
 import { createMatch } from "./match.ts";
+import { MODE_RULES } from "./rules/index.ts";
 import type { AuthoritativeMatch, GameMode, Piece } from "./types.ts";
 
 /**

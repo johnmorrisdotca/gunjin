@@ -1,9 +1,9 @@
+import { createMatch as createGunjinShogiMatch } from "./dist/gunjin-shogi.js";
 import { createHasamiMatch } from "./dist/hasami.js";
 import { createLuzhanqiMiniMatch } from "./dist/luzhanqi-mini.js";
+import { mountGunjin } from "./dist/play.js";
 import { createSalpakanMatch } from "./dist/salpakan.js";
 import { createMatch as createStrategoLiteMatch } from "./dist/stratego-lite.js";
-import { createMatch as createGunjinShogiMatch } from "./dist/gunjin-shogi.js";
-import { mountGunjin } from "./dist/play.js";
 
 const controls = {
   mode: document.querySelector("#mode"),

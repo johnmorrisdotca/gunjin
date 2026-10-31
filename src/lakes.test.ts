@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { drawGunjinBoard } from "./draw.ts";
 import { createMatch } from "./match.ts";
 import { STRATEGO_LITE_RULES } from "./rules/strategoLite.ts";
-import { boardFeatures, viewForPlayer } from "./views.ts";
 import type { AuthoritativeMatch, GameMode } from "./types.ts";
+import { boardFeatures, viewForPlayer } from "./views.ts";
 
 const PLAYING: Record<GameMode, [number, number]> = {
   "hidden-hasami": [7, 7],

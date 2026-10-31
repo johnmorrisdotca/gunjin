@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { combatWinner } from "./salpakan.ts";
-import { LUZHANQI_MINI_RULES } from "./luzhanqiMini.ts";
-import { HIDDEN_HASAMI_RULES } from "./hiddenHasami.ts";
-import { SALPAKAN_RULES } from "./salpakan.ts";
-import { GUNJIN_SHOGI_RULES, gunjinCombat } from "./gunjinShogi.ts";
-import { STRATEGO_LITE_RULES, strategoCombat } from "./strategoLite.ts";
 import type { AuthoritativeMatch, Piece } from "../types.ts";
+import { GUNJIN_SHOGI_RULES, gunjinCombat } from "./gunjinShogi.ts";
+import { HIDDEN_HASAMI_RULES } from "./hiddenHasami.ts";
+import { LUZHANQI_MINI_RULES } from "./luzhanqiMini.ts";
+import { combatWinner, SALPAKAN_RULES } from "./salpakan.ts";
+import { STRATEGO_LITE_RULES, strategoCombat } from "./strategoLite.ts";
 
 function board(mode: AuthoritativeMatch["mode"], width: number, height: number, pieces: Piece[]): AuthoritativeMatch {
   return {

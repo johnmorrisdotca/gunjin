@@ -1,5 +1,5 @@
-import type { AuthoritativeMatch, MatchResult, PublicReplay, PublicEvent } from "./types.ts";
 import { MODE_RULES } from "./rules/index.ts";
+import type { AuthoritativeMatch, MatchResult, PublicEvent, PublicReplay } from "./types.ts";
 
 /** Creates a public replay with only combat ranks that the selected rules expose.
  *

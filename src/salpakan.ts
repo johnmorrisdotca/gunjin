@@ -1,7 +1,7 @@
 import { createMatch, playMove, submitSetup } from "./match.ts";
 import { SALPAKAN_RULES } from "./rules/salpakan.ts";
-import type { MoveAction, Player } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
+import type { MoveAction, Player } from "./types.ts";
 
 /** Makes the fixed classic 9×8 Salpakan match.
  *

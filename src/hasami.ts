@@ -1,7 +1,7 @@
 import { createMatch, playMove, submitSetup } from "./match.ts";
 import { HIDDEN_HASAMI_RULES } from "./rules/hiddenHasami.ts";
-import type { MoveAction, Player, SetupSize } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
+import type { MoveAction, Player, SetupSize } from "./types.ts";
 
 /** Makes a Hasami-inspired match with a 7×7 or 9×9 board.
  *

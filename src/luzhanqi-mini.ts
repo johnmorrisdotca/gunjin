@@ -1,7 +1,7 @@
 import { createMatch, playMove, submitSetup } from "./match.ts";
 import { LUZHANQI_MINI_RULES } from "./rules/luzhanqiMini.ts";
-import type { MoveAction, Player } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
+import type { MoveAction, Player } from "./types.ts";
 
 /** Makes the fixed 7×8 streamlined land-battle training game.
  *

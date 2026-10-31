@@ -59,7 +59,7 @@ function resolveMove(match: AuthoritativeMatch, moving: Piece, destination: Coor
       const piece = pieceAt(pieces, { x, y });
       if (!piece) break;
       if (piece.owner === moving.owner) {
-        run.forEach((enemy) => captured.set(enemy.id, enemy));
+        for (const enemy of run) captured.set(enemy.id, enemy);
         break;
       }
       run.push(piece);

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { servePages } from "./serve.mjs";
 
 test("Docs follows initial and live language under the Pages prefix", async ({ page }) => {

@@ -1,23 +1,23 @@
+import { drawGunjinBoard } from "./draw.ts";
 import {
   acceptDraw,
   acknowledgePass,
+  declineDraw,
   legalMovesForCurrentPlayer,
   offerDraw,
   playMove,
   resignMatch,
   rosterForSetup,
   submitSetup,
-  declineDraw,
 } from "./index-core.ts";
-import { drawGunjinBoard } from "./draw.ts";
-import { GUNJIN_STYLE } from "./style.ts";
-import { playerName, roleName, words } from "./strings.ts";
-import { boardFeatures, viewForPlayer, publicPosition } from "./views.ts";
 import { encodePublicReplay } from "./replay.ts";
 import { isCamp, isHeadquarters } from "./rules/luzhanqiMini.ts";
-import type { AuthoritativeMatch, Coordinate, Player, PublicPosition } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
 import type { Language, Material, PieceStyle } from "./strings.ts";
+import { playerName, roleName, words } from "./strings.ts";
+import { GUNJIN_STYLE } from "./style.ts";
+import type { AuthoritativeMatch, Coordinate, Player, PublicPosition } from "./types.ts";
+import { boardFeatures, publicPosition, viewForPlayer } from "./views.ts";
 
 /** Locale, materials, and safe public callbacks for a mounted hotseat player.
  *

@@ -1,8 +1,16 @@
-import { MODE_RULES } from "./rules/index.ts";
 import { publicPositionKey } from "./rules/board.ts";
-import type { AuthoritativeMatch, Coordinate, GameMode, MatchResult, MoveAction, Player, SetupSize } from "./types.ts";
-import type { Piece } from "./types.ts";
+import { MODE_RULES } from "./rules/index.ts";
 import type { SetupPiece } from "./rules/types.ts";
+import type {
+  AuthoritativeMatch,
+  Coordinate,
+  GameMode,
+  MatchResult,
+  MoveAction,
+  Piece,
+  Player,
+  SetupSize,
+} from "./types.ts";
 
 /** Creates an authoritative match. Keep this state on a trusted host.
  *

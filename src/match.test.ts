@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { acknowledgePass, createMatch, offerDraw, playMove, rosterForSetup, submitSetup } from "./match.ts";
-import { publicPositionKey } from "./rules/board.ts";
-import { viewForPlayer, publicPosition } from "./views.ts";
 import { drawGunjinBoard } from "./draw.ts";
+import { acknowledgePass, createMatch, offerDraw, playMove, rosterForSetup, submitSetup } from "./match.ts";
 import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
+import { publicPositionKey } from "./rules/board.ts";
 import { decodeTrustedMatch, encodeTrustedMatch } from "./trusted.ts";
 import type { AuthoritativeMatch } from "./types.ts";
+import { publicPosition, viewForPlayer } from "./views.ts";
 
 describe("match handoff and public information", () => {
   it("round-trips trusted setup and play states for both newer modes", () => {
