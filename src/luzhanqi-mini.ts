@@ -91,11 +91,7 @@ export function submitLuzhanqiMiniSetup(
  * console.log(playLuzhanqiMiniMove(luzReady,0,luzAction).phase);
  * ```
  */
-export function playLuzhanqiMiniMove(
-  match: ReturnType<typeof createMatch>,
-  player: Player,
-  action: MoveAction,
-) {
+export function playLuzhanqiMiniMove(match: ReturnType<typeof createMatch>, player: Player, action: MoveAction) {
   requireMode(match);
   return playMove(match, player, action);
 }

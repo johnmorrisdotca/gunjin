@@ -175,7 +175,7 @@ export function mountGunjin(
       draft,
     });
     const cells = makeCellButtons(view, []);
-    cells.querySelectorAll<HTMLButtonElement>("button").forEach(button => {
+    cells.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
       button.addEventListener("click", () => placeSetupAt(Number(button.dataset.cell)));
     });
     board.append(cells);
@@ -188,18 +188,22 @@ export function mountGunjin(
       ? `${roleName(language(), currentRole)} · ${draft.length + 1} / ${roster.length}`
       : `${draft.length} / ${roster.length}`;
     tools.append(setupCount);
-    button(w.undoSetup, () => {
-      draft = draft.slice(0, -1);
-      message = "";
-      update();
-    }, false);
+    button(
+      w.undoSetup,
+      () => {
+        draft = draft.slice(0, -1);
+        message = "";
+        update();
+      },
+      false,
+    );
     button(w.submitSetup, submitCurrentSetup, true);
   };
 
   const placeSetupAt = (cell: number) => {
     const x = cell % match.width;
     const y = Math.floor(cell / match.width);
-    const existing = draft.findIndex(piece => piece.x === x && piece.y === y);
+    const existing = draft.findIndex((piece) => piece.x === x && piece.y === y);
     if (existing >= 0) {
       draft = draft.filter((_, index) => index !== existing);
       message = "";
@@ -239,8 +243,8 @@ export function mountGunjin(
 
     const destinations = selected
       ? legalMovesForCurrentPlayer(match, match.currentPlayer)
-        .filter(move => sameCoordinate(move.from, selected!))
-        .map(move => move.to)
+          .filter((move) => sameCoordinate(move.from, selected!))
+          .map((move) => move.to)
       : [];
     board.innerHTML = drawGunjinBoard(view, {
       language: language(),
@@ -250,13 +254,13 @@ export function mountGunjin(
       targets: destinations,
     });
     const cells = makeCellButtons(view, destinations);
-    cells.querySelectorAll<HTMLButtonElement>("button").forEach(button => {
+    cells.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
       button.addEventListener("click", () => chooseCell(Number(button.dataset.cell)));
     });
     board.append(cells);
 
     if (match.mode === "stratego-lite") {
-      const battles = view.publicLog.filter(event => event.revealed?.length === 2).slice(-8);
+      const battles = view.publicLog.filter((event) => event.revealed?.length === 2).slice(-8);
       if (battles.length > 0) {
         const history = document.createElement("section");
         history.className = "gj-battle-history";
@@ -305,9 +309,8 @@ export function mountGunjin(
     if (match.phase !== "play") return;
     const coordinate = { x: cell % match.width, y: Math.floor(cell / match.width) };
     const moves = legalMovesForCurrentPlayer(match, match.currentPlayer);
-    const isDestination = selected && moves.some(move =>
-      sameCoordinate(move.from, selected!) && sameCoordinate(move.to, coordinate),
-    );
+    const isDestination =
+      selected && moves.some((move) => sameCoordinate(move.from, selected!) && sameCoordinate(move.to, coordinate));
     if (isDestination && selected) {
       try {
         const previous = match.result;
@@ -327,8 +330,8 @@ export function mountGunjin(
       return;
     }
 
-    const ownPiece = match.pieces.find(piece =>
-      piece.owner === match.currentPlayer && sameCoordinate(piece, coordinate),
+    const ownPiece = match.pieces.find(
+      (piece) => piece.owner === match.currentPlayer && sameCoordinate(piece, coordinate),
     );
     selected = ownPiece ? coordinate : null;
     message = selected ? words(language()).selectTarget : words(language()).selectPiece;
@@ -339,9 +342,7 @@ export function mountGunjin(
   const acceptCurrentDraw = () => runTurnAction(acceptDraw);
   const declineCurrentDraw = () => runTurnAction(declineDraw);
   const resignCurrentGame = () => runTurnAction(resignMatch);
-  const runTurnAction = (
-    action: (state: AuthoritativeMatch, player: Player, turn: number) => AuthoritativeMatch,
-  ) => {
+  const runTurnAction = (action: (state: AuthoritativeMatch, player: Player, turn: number) => AuthoritativeMatch) => {
     try {
       match = action(match, match.currentPlayer, match.turn);
       emitChange();
@@ -353,10 +354,7 @@ export function mountGunjin(
     }
   };
 
-  const makeCellButtons = (
-    view: ReturnType<typeof viewForPlayer>,
-    targets: readonly Coordinate[],
-  ) => {
+  const makeCellButtons = (view: ReturnType<typeof viewForPlayer>, targets: readonly Coordinate[]) => {
     const lakes = boardFeatures(match.mode, match.width, match.height).lakes;
     const grid = document.createElement("div");
     grid.className = "gj-cells";
@@ -365,8 +363,8 @@ export function mountGunjin(
     for (let cell = 0; cell < match.width * match.height; cell += 1) {
       const x = cell % match.width;
       const y = Math.floor(cell / match.width);
-      const piece = view.pieces?.find(item => item.x === x && item.y === y);
-      const lake = lakes.some(cell => cell.x === x && cell.y === y);
+      const piece = view.pieces?.find((item) => item.x === x && item.y === y);
+      const lake = lakes.some((cell) => cell.x === x && cell.y === y);
       const label = lake
         ? `${words(language()).lake}, ${x + 1}, ${y + 1}`
         : piece?.kind
@@ -380,9 +378,12 @@ export function mountGunjin(
       button.tabIndex = cell === 0 ? 0 : -1;
       button.dataset.cell = String(cell);
       button.setAttribute("aria-label", label || `${x + 1}, ${y + 1}`);
-      button.setAttribute("aria-description", targets.some(target => target.x === x && target.y === y) ? words(language()).selectTarget : "");
+      button.setAttribute(
+        "aria-description",
+        targets.some((target) => target.x === x && target.y === y) ? words(language()).selectTarget : "",
+      );
       button.setAttribute("aria-keyshortcuts", "ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space");
-      button.addEventListener("keydown", event => {
+      button.addEventListener("keydown", (event) => {
         const moves: Record<string, Coordinate> = {
           ArrowUp: { x, y: y - 1 },
           ArrowDown: { x, y: y + 1 },
@@ -395,7 +396,9 @@ export function mountGunjin(
         const index = next.y * match.width + next.x;
         const nextButton = grid.querySelector<HTMLButtonElement>(`button[data-cell="${index}"]`);
         if (nextButton) {
-          grid.querySelectorAll<HTMLButtonElement>("button").forEach(cellButton => { cellButton.tabIndex = -1; });
+          grid.querySelectorAll<HTMLButtonElement>("button").forEach((cellButton) => {
+            cellButton.tabIndex = -1;
+          });
           nextButton.tabIndex = 0;
           nextButton.focus();
         }
@@ -405,11 +408,7 @@ export function mountGunjin(
     return grid;
   };
 
-  const allowedSetupCell = (
-    state: AuthoritativeMatch,
-    kind: string,
-    cell: Coordinate,
-  ): boolean => {
+  const allowedSetupCell = (state: AuthoritativeMatch, kind: string, cell: Coordinate): boolean => {
     if (state.mode === "hidden-hasami") {
       return cell.y === (state.currentPlayer === 0 ? state.height - 1 : 0);
     }
@@ -418,7 +417,9 @@ export function mountGunjin(
     }
     if (state.mode === "gunjin-shogi") {
       const homeRows = state.currentPlayer === 0 ? [5, 6, 7, 8] : [0, 1, 2, 3];
-      return homeRows.includes(cell.y) && !(kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${cell.x}:${cell.y}`));
+      return (
+        homeRows.includes(cell.y) && !(kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${cell.x}:${cell.y}`))
+      );
     }
     if (state.mode === "stratego-lite") {
       const homeRows = state.currentPlayer === 0 ? [6, 7, 8, 9] : [0, 1, 2, 3];
@@ -453,7 +454,7 @@ export function mountGunjin(
   return {
     view: copyView,
     replay: () => encodePublicReplay(match),
-    set: next => {
+    set: (next) => {
       options = { ...options, ...next };
       update();
     },

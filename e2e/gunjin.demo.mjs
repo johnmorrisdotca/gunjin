@@ -13,7 +13,7 @@ const cellsFrom = (first, count) => Array.from({ length: count }, (_, index) => 
 
 test("Gunjin opens a private setup screen and keeps ranks out of public views", async ({ page }) => {
   const errors = [];
-  page.on("pageerror", error => errors.push(String(error)));
+  page.on("pageerror", (error) => errors.push(String(error)));
   const base = await servePages(page, ROOT);
   await page.goto(base);
   await expect(page.locator(".gj-cell")).toHaveCount(81);
@@ -27,10 +27,16 @@ test("Gunjin opens a private setup screen and keeps ranks out of public views", 
 
 test("every one of the five games opens its setup screen", async ({ page }) => {
   const errors = [];
-  page.on("pageerror", error => errors.push(String(error)));
+  page.on("pageerror", (error) => errors.push(String(error)));
   const base = await servePages(page, ROOT);
   await page.goto(base);
-  for (const [mode, cells] of [["hidden-hasami", 81], ["luzhanqi-mini", 56], ["salpakan", 72], ["stratego-lite", 100], ["gunjin-shogi", 81]]) {
+  for (const [mode, cells] of [
+    ["hidden-hasami", 81],
+    ["luzhanqi-mini", 56],
+    ["salpakan", 72],
+    ["stratego-lite", 100],
+    ["gunjin-shogi", 81],
+  ]) {
     await page.getByLabel("Game", { exact: true }).selectOption(mode);
     await page.getByRole("button", { name: "New game" }).click();
     await expect(page.locator(".gj-cell"), mode).toHaveCount(cells);
@@ -41,7 +47,9 @@ test("every one of the five games opens its setup screen", async ({ page }) => {
 test("the library the page imports is served beside it, under the name the site is published at", async ({ page }) => {
   const base = await servePages(page, ROOT);
   const failed = [];
-  page.on("response", response => { if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`); });
+  page.on("response", (response) => {
+    if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`);
+  });
   await page.goto(base);
   await expect(page.locator(".gj-cell")).toHaveCount(81);
   expect(failed).toEqual([]);
@@ -68,7 +76,7 @@ test("hidden Hasami passes setup privately, moves, and saves a public record", a
 
 test("a Gunjin Shogi game is played to its end: the colonel takes the flag and its side wins", async ({ page }) => {
   const errors = [];
-  page.on("pageerror", error => errors.push(String(error)));
+  page.on("pageerror", (error) => errors.push(String(error)));
   const base = await servePages(page, ROOT);
   await page.goto(base);
   await page.getByLabel("Game", { exact: true }).selectOption("gunjin-shogi");
@@ -94,7 +102,7 @@ test("a Gunjin Shogi game is played to its end: the colonel takes the flag and i
 
 test("Hidden Capture Flag's two lakes are drawn, and named to a screen reader, in light and dark", async ({ page }) => {
   const errors = [];
-  page.on("pageerror", error => errors.push(String(error)));
+  page.on("pageerror", (error) => errors.push(String(error)));
   const base = await servePages(page, ROOT);
   await page.goto(base);
   await page.getByLabel("Game", { exact: true }).selectOption("stratego-lite");
@@ -123,15 +131,23 @@ test("the setting rows do not overlap at a phone's width", async ({ page }) => {
   const base = await servePages(page, ROOT);
   await page.goto(base);
   await expect(page.locator(".gj-cell")).toHaveCount(81);
-  const boxes = await page.locator(".controls select").evaluateAll(list => list.filter(item => item.offsetParent !== null).map(item => {
-    const box = item.getBoundingClientRect();
-    return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
-  }));
+  const boxes = await page.locator(".controls select").evaluateAll((list) =>
+    list
+      .filter((item) => item.offsetParent !== null)
+      .map((item) => {
+        const box = item.getBoundingClientRect();
+        return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+      }),
+  );
   expect(boxes.length).toBeGreaterThanOrEqual(5);
   for (const [index, one] of boxes.entries()) {
     expect(one.right).toBeLessThanOrEqual(390);
     for (const other of boxes.slice(index + 1)) {
-      const apart = one.right <= other.left + 0.5 || other.right <= one.left + 0.5 || one.bottom <= other.top + 0.5 || other.bottom <= one.top + 0.5;
+      const apart =
+        one.right <= other.left + 0.5 ||
+        other.right <= one.left + 0.5 ||
+        one.bottom <= other.top + 0.5 ||
+        other.bottom <= one.top + 0.5;
       expect(apart, `${JSON.stringify(one)} overlaps ${JSON.stringify(other)}`).toBe(true);
     }
   }

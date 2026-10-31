@@ -1,14 +1,6 @@
 import { MODE_RULES } from "./rules/index.ts";
 import { publicPositionKey } from "./rules/board.ts";
-import type {
-  AuthoritativeMatch,
-  Coordinate,
-  GameMode,
-  MatchResult,
-  MoveAction,
-  Player,
-  SetupSize,
-} from "./types.ts";
+import type { AuthoritativeMatch, Coordinate, GameMode, MatchResult, MoveAction, Player, SetupSize } from "./types.ts";
 import type { Piece } from "./types.ts";
 import type { SetupPiece } from "./rules/types.ts";
 
@@ -24,10 +16,7 @@ import type { SetupPiece } from "./rules/types.ts";
  * console.log(createMatch("gunjin-shogi").phase);
  * ```
  */
-export function createMatch(
-  mode: GameMode,
-  size: SetupSize = {},
-): AuthoritativeMatch {
+export function createMatch(mode: GameMode, size: SetupSize = {}): AuthoritativeMatch {
   const rules = MODE_RULES[mode];
   if (!rules) throw new RangeError("Unknown Gunjin mode");
   const width = size.width ?? rules.defaultWidth;
@@ -62,10 +51,7 @@ export function createMatch(
  * console.log(rosterForSetup(base,0));
  * ```
  */
-export function rosterForSetup(
-  match: AuthoritativeMatch,
-  player: Player,
-): readonly string[] {
+export function rosterForSetup(match: AuthoritativeMatch, player: Player): readonly string[] {
   return MODE_RULES[match.mode].roster(player, match.width, match.height);
 }
 
@@ -93,11 +79,7 @@ export function submitSetup(
   placements: readonly SetupPiece[],
   expectedSetupStep: number,
 ): AuthoritativeMatch {
-  if (
-    match.phase !== "setup" ||
-    match.currentPlayer !== player ||
-    match.setupStep !== expectedSetupStep
-  ) {
+  if (match.phase !== "setup" || match.currentPlayer !== player || match.setupStep !== expectedSetupStep) {
     throw new RangeError("The setup is stale or belongs to the other player");
   }
 
@@ -120,9 +102,7 @@ export function submitSetup(
   setups[player] = setup;
   const setupStep = match.setupStep + 1;
   const isSecondSetup = setupStep === 2;
-  const pieces = isSecondSetup
-    ? [...setups[0], ...setups[1]]
-    : match.pieces;
+  const pieces = isSecondSetup ? [...setups[0], ...setups[1]] : match.pieces;
 
   return {
     ...match,
@@ -153,16 +133,8 @@ export function submitSetup(
  * console.log(acknowledgePass(firstSetup,1,firstSetup.turn).phase);
  * ```
  */
-export function acknowledgePass(
-  match: AuthoritativeMatch,
-  player: Player,
-  expectedTurn: number,
-): AuthoritativeMatch {
-  if (
-    match.phase !== "pass" ||
-    match.currentPlayer !== player ||
-    match.turn !== expectedTurn
-  ) {
+export function acknowledgePass(match: AuthoritativeMatch, player: Player, expectedTurn: number): AuthoritativeMatch {
+  if (match.phase !== "pass" || match.currentPlayer !== player || match.turn !== expectedTurn) {
     throw new RangeError("The pass-device confirmation is stale or belongs to the other player");
   }
   if (match.passPurpose === "setup") {
@@ -204,28 +176,19 @@ export function acknowledgePass(
  * console.log(playMove(ready,0,action).phase);
  * ```
  */
-export function playMove(
-  match: AuthoritativeMatch,
-  player: Player,
-  action: MoveAction,
-): AuthoritativeMatch {
-  if (
-    match.phase !== "play" ||
-    match.result ||
-    match.currentPlayer !== player ||
-    action.expectedTurn !== match.turn
-  ) {
+export function playMove(match: AuthoritativeMatch, player: Player, action: MoveAction): AuthoritativeMatch {
+  if (match.phase !== "play" || match.result || match.currentPlayer !== player || action.expectedTurn !== match.turn) {
     throw new RangeError("The move is stale, out of turn, or the match is not playing");
   }
 
-  const moving = match.pieces.find(piece =>
-    piece.owner === player && piece.x === action.from.x && piece.y === action.from.y,
+  const moving = match.pieces.find(
+    (piece) => piece.owner === player && piece.x === action.from.x && piece.y === action.from.y,
   );
   if (!moving) throw new RangeError("There is no moving player's piece at that cell");
 
   const rules = MODE_RULES[match.mode];
   const legal = rules.legalDestinations(match, moving);
-  if (!legal.some(destination => sameCoordinate(destination, action.to))) {
+  if (!legal.some((destination) => sameCoordinate(destination, action.to))) {
     throw new RangeError("That destination is not a legal move");
   }
 
@@ -241,13 +204,14 @@ export function playMove(
     passPurpose: "play",
     pendingFlagClaimant: resolution.clearPendingFlag
       ? undefined
-      : resolution.pendingFlagClaimant ?? match.pendingFlagClaimant,
+      : (resolution.pendingFlagClaimant ?? match.pendingFlagClaimant),
     drawOffer: undefined,
   };
 
-  const result = resolution.winner !== undefined
-    ? { winner: resolution.winner, reason: resolution.reason! } satisfies MatchResult
-    : undefined;
+  const result =
+    resolution.winner !== undefined
+      ? ({ winner: resolution.winner, reason: resolution.reason! } satisfies MatchResult)
+      : undefined;
   const event = {
     turn,
     player,
@@ -255,7 +219,7 @@ export function playMove(
     to: action.to,
     capturedCells: resolution.captured.map(({ x, y }) => ({ x, y })),
     capturedCount: resolution.captured.length,
-    revealed: resolution.revealed?.map(piece => ({ owner: piece.owner, kind: piece.kind })),
+    revealed: resolution.revealed?.map((piece) => ({ owner: piece.owner, kind: piece.kind })),
     outcome: result,
   };
   next = { ...next, log: [...match.log, event] };
@@ -295,11 +259,7 @@ export function playMove(
  * console.log(resignMatch(ready,0,ready.turn).result);
  * ```
  */
-export function resignMatch(
-  match: AuthoritativeMatch,
-  player: Player,
-  expectedTurn: number,
-): AuthoritativeMatch {
+export function resignMatch(match: AuthoritativeMatch, player: Player, expectedTurn: number): AuthoritativeMatch {
   if (match.phase !== "play" || match.currentPlayer !== player || match.turn !== expectedTurn) {
     throw new RangeError("The resignation is stale or out of turn");
   }
@@ -327,15 +287,11 @@ export function resignMatch(
  * console.log(offerDraw(ready,0,ready.turn).phase);
  * ```
  */
-export function offerDraw(
-  match: AuthoritativeMatch,
-  player: Player,
-  expectedTurn: number,
-): AuthoritativeMatch {
+export function offerDraw(match: AuthoritativeMatch, player: Player, expectedTurn: number): AuthoritativeMatch {
   if (match.phase !== "play" || match.currentPlayer !== player || match.turn !== expectedTurn) {
     throw new RangeError("The draw offer is stale or out of turn");
   }
-  if (match.drawOffer === (1 - player)) {
+  if (match.drawOffer === 1 - player) {
     throw new RangeError("The opponent's draw offer has to be accepted or declined first");
   }
   return {
@@ -370,16 +326,12 @@ export function offerDraw(
  * console.log(acceptDraw(received,1,received.turn).result);
  * ```
  */
-export function acceptDraw(
-  match: AuthoritativeMatch,
-  player: Player,
-  expectedTurn: number,
-): AuthoritativeMatch {
+export function acceptDraw(match: AuthoritativeMatch, player: Player, expectedTurn: number): AuthoritativeMatch {
   if (
     match.phase !== "play" ||
     match.currentPlayer !== player ||
     match.turn !== expectedTurn ||
-    match.drawOffer !== (1 - player)
+    match.drawOffer !== 1 - player
   ) {
     throw new RangeError("There is no current opponent draw offer to accept");
   }
@@ -409,16 +361,12 @@ export function acceptDraw(
  * console.log(declineDraw(received,1,received.turn).drawOffer);
  * ```
  */
-export function declineDraw(
-  match: AuthoritativeMatch,
-  player: Player,
-  expectedTurn: number,
-): AuthoritativeMatch {
+export function declineDraw(match: AuthoritativeMatch, player: Player, expectedTurn: number): AuthoritativeMatch {
   if (
     match.phase !== "play" ||
     match.currentPlayer !== player ||
     match.turn !== expectedTurn ||
-    match.drawOffer !== (1 - player)
+    match.drawOffer !== 1 - player
   ) {
     throw new RangeError("There is no current opponent draw offer to decline");
   }
@@ -427,19 +375,13 @@ export function declineDraw(
 
 function hasAnyLegalMove(match: AuthoritativeMatch, player: Player): boolean {
   const rules = MODE_RULES[match.mode];
-  return match.pieces.some(piece =>
-    piece.owner === player && rules.legalDestinations(match, piece).length > 0,
-  );
+  return match.pieces.some((piece) => piece.owner === player && rules.legalDestinations(match, piece).length > 0);
 }
 
-function matchesRoster(
-  placements: readonly SetupPiece[],
-  roster: readonly string[],
-): boolean {
+function matchesRoster(placements: readonly SetupPiece[], roster: readonly string[]): boolean {
   const expected = countKinds(roster);
-  const actual = countKinds(placements.map(piece => piece.kind));
-  return expected.size === actual.size &&
-    [...expected].every(([kind, count]) => actual.get(kind) === count);
+  const actual = countKinds(placements.map((piece) => piece.kind));
+  return expected.size === actual.size && [...expected].every(([kind, count]) => actual.get(kind) === count);
 }
 
 function countKinds(kinds: readonly string[]): Map<string, number> {

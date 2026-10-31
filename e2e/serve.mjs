@@ -4,7 +4,13 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".md": "text/markdown", ".json": "application/json" };
+const TYPES = {
+  ".html": "text/html",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".md": "text/markdown",
+  ".json": "application/json",
+};
 
 /** Routes http://example.test/<name>/** to the folder `dir` (default ./site) and answers anything else 404, as Pages does. */
 export async function servePages(page, name, dir = "site") {
@@ -15,7 +21,8 @@ export async function servePages(page, name, dir = "site") {
     if (!pathname.startsWith(prefix)) return route.fulfill({ status: 404, body: "" });
     const rest = pathname.slice(prefix.length);
     const file = join(root, rest === "" || rest.endsWith("/") ? `${rest}index.html` : rest);
-    if (!file.startsWith(root) || !existsSync(file) || !statSync(file).isFile()) return route.fulfill({ status: 404, body: "" });
+    if (!file.startsWith(root) || !existsSync(file) || !statSync(file).isFile())
+      return route.fulfill({ status: 404, body: "" });
     const extension = file.slice(file.lastIndexOf("."));
     return route.fulfill({ body: readFileSync(file), contentType: TYPES[extension] ?? "application/octet-stream" });
   });

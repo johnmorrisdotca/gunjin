@@ -20,7 +20,11 @@ const scratch = mkdtempSync(join(tmpdir(), "kazu-package-"));
 function run(command, args, cwd, viaShell = false) {
   const shell = viaShell && windows;
   // A path is quoted for the shell; a bare name such as npm is left for the shell to find.
-  const ran = spawnSync(shell && /[\\/]/.test(command) ? `"${command}"` : command, args, { cwd, encoding: "utf8", shell });
+  const ran = spawnSync(shell && /[\\/]/.test(command) ? `"${command}"` : command, args, {
+    cwd,
+    encoding: "utf8",
+    shell,
+  });
   if (ran.status !== 0) {
     console.error(`FAIL ${command} ${args.join(" ")}\n${ran.stdout}\n${ran.stderr}`);
     process.exit(1);
@@ -29,7 +33,9 @@ function run(command, args, cwd, viaShell = false) {
 }
 
 // 1. Pack, with npm.
-const packed = JSON.parse(run("npm", ["pack", "--json", "--ignore-scripts", "--pack-destination", scratch], root, true));
+const packed = JSON.parse(
+  run("npm", ["pack", "--json", "--ignore-scripts", "--pack-destination", scratch], root, true),
+);
 const tarball = join(scratch, packed[0].filename);
 const inTarball = new Set(packed[0].files.map((file) => file.path));
 console.log(`ok   npm pack: ${packed[0].filename}, ${packed[0].files.length} files`);
@@ -42,7 +48,13 @@ if (shipped.length > 0) {
 console.log("ok   no picture and nothing from docs/ is in the tarball");
 
 // 2. Everything package.json points at is in the tarball.
-const pointed = [pkg.main, pkg.module, pkg.types, ...Object.values(pkg.bin ?? {}), ...Object.values(pkg.exports).flatMap((entry) => (typeof entry === "string" ? [entry] : Object.values(entry)))];
+const pointed = [
+  pkg.main,
+  pkg.module,
+  pkg.types,
+  ...Object.values(pkg.bin ?? {}),
+  ...Object.values(pkg.exports).flatMap((entry) => (typeof entry === "string" ? [entry] : Object.values(entry))),
+];
 for (const file of new Set(pointed)) {
   if (!inTarball.has(file.replace(/^\.\//, ""))) {
     console.error(`FAIL package.json points at ${file}, which is not in the tarball`);
@@ -67,8 +79,10 @@ run("npm", ["install", "--no-audit", "--no-fund", "--silent", tarball], project,
 console.log("ok   npm install of the tarball");
 
 // Import the installed package, rather than this checkout, through every public entry.
-const entries = Object.keys(pkg.exports).map(key => key === "." ? pkg.name : `${pkg.name}/${key.slice(2)}`);
-writeFileSync(join(project, "esm.mjs"), `${entries.map((entry, index) => `import * as m${index} from ${JSON.stringify(entry)};`).join("\n")}
+const entries = Object.keys(pkg.exports).map((key) => (key === "." ? pkg.name : `${pkg.name}/${key.slice(2)}`));
+writeFileSync(
+  join(project, "esm.mjs"),
+  `${entries.map((entry, index) => `import * as m${index} from ${JSON.stringify(entry)};`).join("\n")}
 const modules = [${entries.map((_, index) => `m${index}`).join(", ")}];
 if (modules.some(module => Object.keys(module).length === 0)) throw new Error("An installed entry exports nothing");
 // A host ends a match by resignation or by agreement through the two generic entries.
@@ -79,10 +93,14 @@ for (const entry of ["stratego-lite", "gunjin-shogi"]) {
   }
 }
 if (typeof m0.mountGunjin !== "function" || typeof m0.viewForPlayer !== "function") throw new Error("The player exports are missing");
-`);
-writeFileSync(join(project, "cjs.cjs"), `for (const entry of ${JSON.stringify(entries)}) {
+`,
+);
+writeFileSync(
+  join(project, "cjs.cjs"),
+  `for (const entry of ${JSON.stringify(entries)}) {
   if (Object.keys(require(entry)).length === 0) throw new Error(entry + " exports nothing");
-}`);
+}`,
+);
 run(process.execPath, ["esm.mjs"], project);
 run(process.execPath, ["cjs.cjs"], project);
 rmSync(scratch, { recursive: true, force: true });

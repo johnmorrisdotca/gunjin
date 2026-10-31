@@ -7,23 +7,19 @@ export const HIDDEN_HASAMI_RULES: ModeRules = {
   mode: "hidden-hasami",
   defaultWidth: 9,
   defaultHeight: 9,
-  acceptsSize: (width, height) =>
-    (width === 7 && height === 7) || (width === 9 && height === 9),
+  acceptsSize: (width, height) => (width === 7 && height === 7) || (width === 9 && height === 9),
   roster: (_player, width) => ["leader", ...Array(width - 1).fill("guard")],
   validateSetup,
   legalDestinations,
   resolveMove,
 };
 
-function validateSetup(
-  player: Player,
-  placements: readonly SetupPiece[],
-): boolean {
+function validateSetup(player: Player, placements: readonly SetupPiece[]): boolean {
   const side = placements.length === 7 ? 7 : placements.length === 9 ? 9 : 0;
   if (!side || placements.length !== side) return false;
   const homeY = player === 0 ? side - 1 : 0;
-  const leaderCount = placements.filter(piece => piece.kind === "leader").length;
-  const guards = placements.filter(piece => piece.kind === "guard").length;
+  const leaderCount = placements.filter((piece) => piece.kind === "leader").length;
+  const guards = placements.filter((piece) => piece.kind === "guard").length;
   const occupied = new Set<string>();
   for (const piece of placements) {
     if (piece.y !== homeY || !Number.isInteger(piece.x) || piece.x < 0 || piece.x >= side) return false;
@@ -34,10 +30,7 @@ function validateSetup(
   return leaderCount === 1 && guards === side - 1;
 }
 
-function legalDestinations(
-  match: AuthoritativeMatch,
-  piece: Piece,
-): Coordinate[] {
+function legalDestinations(match: AuthoritativeMatch, piece: Piece): Coordinate[] {
   const destinations: Coordinate[] = [];
   for (const direction of DIRECTIONS) {
     let next = { x: piece.x + direction.x, y: piece.y + direction.y };
@@ -49,11 +42,7 @@ function legalDestinations(
   return destinations;
 }
 
-function resolveMove(
-  match: AuthoritativeMatch,
-  moving: Piece,
-  destination: Coordinate,
-): MoveResolution {
+function resolveMove(match: AuthoritativeMatch, moving: Piece, destination: Coordinate): MoveResolution {
   if (!hasClearRookPath(match, moving, destination) || pieceAt(match.pieces, destination)) {
     throw new RangeError("Hasami stones move along a clear rank or file to an empty cell");
   }
@@ -70,7 +59,7 @@ function resolveMove(
       const piece = pieceAt(pieces, { x, y });
       if (!piece) break;
       if (piece.owner === moving.owner) {
-        run.forEach(enemy => captured.set(enemy.id, enemy));
+        run.forEach((enemy) => captured.set(enemy.id, enemy));
         break;
       }
       run.push(piece);
@@ -81,13 +70,13 @@ function resolveMove(
 
   const removed = [...captured.values()];
   if (removed.length) {
-    const removedIds = new Set(removed.map(piece => piece.id));
-    pieces = pieces.filter(piece => !removedIds.has(piece.id));
+    const removedIds = new Set(removed.map((piece) => piece.id));
+    pieces = pieces.filter((piece) => !removedIds.has(piece.id));
   }
 
   const enemy = (1 - moving.owner) as Player;
-  const leaderTaken = removed.some(piece => piece.owner === enemy && piece.kind === "leader");
-  const enemyCount = pieces.filter(piece => piece.owner === enemy).length;
+  const leaderTaken = removed.some((piece) => piece.owner === enemy && piece.kind === "leader");
+  const enemyCount = pieces.filter((piece) => piece.owner === enemy).length;
   if (leaderTaken) {
     return { pieces, captured: removed, movedPiece: moved, winner: moving.owner, reason: "objective-captured" };
   }

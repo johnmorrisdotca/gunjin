@@ -71,30 +71,47 @@ function isMatch(value: unknown): value is AuthoritativeMatch {
   if (
     !["setup", "pass", "play", "finished"].includes(match.phase) ||
     (match.currentPlayer !== 0 && match.currentPlayer !== 1) ||
-    !Number.isInteger(match.setupStep) || match.setupStep < 0 || match.setupStep > 2 ||
-    !Number.isInteger(match.turn) || match.turn < 0 ||
+    !Number.isInteger(match.setupStep) ||
+    match.setupStep < 0 ||
+    match.setupStep > 2 ||
+    !Number.isInteger(match.turn) ||
+    match.turn < 0 ||
     (match.drawOffer !== undefined && match.drawOffer !== 0 && match.drawOffer !== 1) ||
     (match.passPurpose !== undefined && !["setup", "play", "draw"].includes(match.passPurpose)) ||
     match.privateSetups.length !== 2 ||
-    match.privateSetups.some((pieces: unknown) => !Array.isArray(pieces) || !pieces.every(piece => isPiece(piece, match)))
+    match.privateSetups.some(
+      (pieces: unknown) => !Array.isArray(pieces) || !pieces.every((piece) => isPiece(piece, match)),
+    )
   ) {
     return false;
   }
-  return match.pieces.every(piece => isPiece(piece, match));
+  return match.pieces.every((piece) => isPiece(piece, match));
 }
 
 function isMode(mode: unknown): mode is GameMode {
-  return mode === "hidden-hasami" || mode === "luzhanqi-mini" || mode === "salpakan" ||
-    mode === "stratego-lite" || mode === "gunjin-shogi";
+  return (
+    mode === "hidden-hasami" ||
+    mode === "luzhanqi-mini" ||
+    mode === "salpakan" ||
+    mode === "stratego-lite" ||
+    mode === "gunjin-shogi"
+  );
 }
 
 function isPiece(value: unknown, match: AuthoritativeMatch): value is Piece {
   if (!value || typeof value !== "object") return false;
   const piece = value as Piece;
-  return typeof piece.id === "string" && piece.id.length > 0 &&
+  return (
+    typeof piece.id === "string" &&
+    piece.id.length > 0 &&
     typeof piece.kind === "string" &&
     (piece.owner === 0 || piece.owner === 1) &&
-    Number.isInteger(piece.x) && piece.x >= 0 && piece.x < match.width &&
-    Number.isInteger(piece.y) && piece.y >= 0 && piece.y < match.height &&
-    MODE_RULES[match.mode].roster(piece.owner, match.width, match.height).includes(piece.kind);
+    Number.isInteger(piece.x) &&
+    piece.x >= 0 &&
+    piece.x < match.width &&
+    Number.isInteger(piece.y) &&
+    piece.y >= 0 &&
+    piece.y < match.height &&
+    MODE_RULES[match.mode].roster(piece.owner, match.width, match.height).includes(piece.kind)
+  );
 }

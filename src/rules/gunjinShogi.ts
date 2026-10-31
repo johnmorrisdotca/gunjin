@@ -3,15 +3,36 @@ import { movePiece, pieceAt } from "./board.ts";
 import type { ModeRules, MoveResolution, SetupPiece } from "./types.ts";
 
 const ROSTER = [
-  "general", "lieutenant-general", ...Array(2).fill("major-general"),
-  ...Array(2).fill("colonel"), ...Array(2).fill("lieutenant-colonel"),
-  ...Array(2).fill("major"), ...Array(2).fill("captain"),
-  ...Array(2).fill("lieutenant"), ...Array(2).fill("second-lieutenant"),
-  "aircraft", "aircraft", ...Array(3).fill("tank"),
-  ...Array(2).fill("cavalry"), ...Array(3).fill("engineer"), "spy",
-  ...Array(3).fill("mine"), "flag",
+  "general",
+  "lieutenant-general",
+  ...Array(2).fill("major-general"),
+  ...Array(2).fill("colonel"),
+  ...Array(2).fill("lieutenant-colonel"),
+  ...Array(2).fill("major"),
+  ...Array(2).fill("captain"),
+  ...Array(2).fill("lieutenant"),
+  ...Array(2).fill("second-lieutenant"),
+  "aircraft",
+  "aircraft",
+  ...Array(3).fill("tank"),
+  ...Array(2).fill("cavalry"),
+  ...Array(3).fill("engineer"),
+  "spy",
+  ...Array(3).fill("mine"),
+  "flag",
 ];
-const RANK = ["general", "lieutenant-general", "major-general", "colonel", "lieutenant-colonel", "major", "captain", "lieutenant", "second-lieutenant", "cavalry"];
+const RANK = [
+  "general",
+  "lieutenant-general",
+  "major-general",
+  "colonel",
+  "lieutenant-colonel",
+  "major",
+  "captain",
+  "lieutenant",
+  "second-lieutenant",
+  "cavalry",
+];
 function isEnemyHeadquarters(player: Player, cell: Coordinate): boolean {
   return cell.y === (player === 0 ? 0 : 8) && (cell.x === 3 || cell.x === 5);
 }
@@ -49,7 +70,7 @@ function validateSetup(player: Player, placements: readonly SetupPiece[]): boole
     counts.set(piece.kind, (counts.get(piece.kind) ?? 0) + 1);
     if (piece.kind === "mine" && new Set(["3:5", "5:5", "3:3", "5:3"]).has(key)) return false;
   }
-  return [...new Set(ROSTER)].every(kind => counts.get(kind) === ROSTER.filter(role => role === kind).length);
+  return [...new Set(ROSTER)].every((kind) => counts.get(kind) === ROSTER.filter((role) => role === kind).length);
 }
 
 function legalDestinations(match: AuthoritativeMatch, piece: Piece): Coordinate[] {
@@ -62,10 +83,22 @@ function legalDestinations(match: AuthoritativeMatch, piece: Piece): Coordinate[
         if (!occupant || occupant.owner !== piece.owner) targets.push({ x, y });
       }
     }
-    return targets.filter(target => target.x !== piece.x || target.y !== piece.y);
+    return targets.filter((target) => target.x !== piece.x || target.y !== piece.y);
   }
-  const directions = [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }];
-  const limit = piece.kind === "engineer" ? Math.max(match.width, match.height) : piece.kind === "cavalry" ? 3 : ["captain", "lieutenant", "second-lieutenant"].includes(piece.kind) ? 2 : 1;
+  const directions = [
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: 1 },
+    { x: 0, y: -1 },
+  ];
+  const limit =
+    piece.kind === "engineer"
+      ? Math.max(match.width, match.height)
+      : piece.kind === "cavalry"
+        ? 3
+        : ["captain", "lieutenant", "second-lieutenant"].includes(piece.kind)
+          ? 2
+          : 1;
   const destinations: Coordinate[] = [];
   for (const direction of directions) {
     for (let step = 1; step <= limit; step += 1) {
@@ -87,19 +120,40 @@ function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Co
   if (!defender) {
     const pieces = movePiece(match.pieces, attacker, destination);
     if (isEnemyHeadquarters(attacker.owner, destination) && !["tank", "aircraft", "engineer"].includes(attacker.kind)) {
-      return { pieces, captured: [], movedPiece: { ...attacker, ...destination }, winner: attacker.owner, reason: "flag-won" };
+      return {
+        pieces,
+        captured: [],
+        movedPiece: { ...attacker, ...destination },
+        winner: attacker.owner,
+        reason: "flag-won",
+      };
     }
     return { pieces, captured: [], movedPiece: { ...attacker, ...destination } };
   }
   if (defender.owner === attacker.owner) throw new RangeError("A friendly piece blocks that square");
   const result = gunjinCombat(attacker.kind, defender.kind);
-  if (result === "both") return { pieces: match.pieces.filter(piece => piece.id !== attacker.id && piece.id !== defender.id), captured: [attacker, defender] };
-  if (result === "defender") return { pieces: match.pieces.filter(piece => piece.id !== attacker.id), captured: [attacker] };
-  const pieces = movePiece(match.pieces.filter(piece => piece.id !== defender.id), attacker, destination);
-  if (defender.kind === "flag" || (isEnemyHeadquarters(attacker.owner, destination) && !["tank", "aircraft", "engineer"].includes(attacker.kind))) {
+  if (result === "both")
     return {
-      pieces, captured: [defender], movedPiece: { ...attacker, ...destination },
-      winner: attacker.owner, reason: "flag-won",
+      pieces: match.pieces.filter((piece) => piece.id !== attacker.id && piece.id !== defender.id),
+      captured: [attacker, defender],
+    };
+  if (result === "defender")
+    return { pieces: match.pieces.filter((piece) => piece.id !== attacker.id), captured: [attacker] };
+  const pieces = movePiece(
+    match.pieces.filter((piece) => piece.id !== defender.id),
+    attacker,
+    destination,
+  );
+  if (
+    defender.kind === "flag" ||
+    (isEnemyHeadquarters(attacker.owner, destination) && !["tank", "aircraft", "engineer"].includes(attacker.kind))
+  ) {
+    return {
+      pieces,
+      captured: [defender],
+      movedPiece: { ...attacker, ...destination },
+      winner: attacker.owner,
+      reason: "flag-won",
     };
   }
   return { pieces, captured: [defender], movedPiece: { ...attacker, ...destination } };
@@ -125,10 +179,18 @@ export function gunjinCombat(attacker: string, defender: string): "attacker" | "
   if (attacker === "mine") return defender === "aircraft" || defender === "engineer" ? "defender" : "attacker";
   if (attacker === "spy") return ["general", "lieutenant-general"].includes(defender) ? "attacker" : "defender";
   if (defender === "spy") return ["general", "lieutenant-general"].includes(attacker) ? "defender" : "attacker";
-  if (attacker === "aircraft") return ["general", "lieutenant-general", "major-general"].includes(defender) ? "defender" : "attacker";
-  if (defender === "aircraft") return ["general", "lieutenant-general", "major-general"].includes(attacker) ? "attacker" : "defender";
-  if (attacker === "tank") return ["general", "lieutenant-general", "major-general", "aircraft", "engineer", "mine"].includes(defender) ? "defender" : "attacker";
-  if (defender === "tank") return ["general", "lieutenant-general", "major-general", "aircraft", "engineer", "mine"].includes(attacker) ? "attacker" : "defender";
+  if (attacker === "aircraft")
+    return ["general", "lieutenant-general", "major-general"].includes(defender) ? "defender" : "attacker";
+  if (defender === "aircraft")
+    return ["general", "lieutenant-general", "major-general"].includes(attacker) ? "attacker" : "defender";
+  if (attacker === "tank")
+    return ["general", "lieutenant-general", "major-general", "aircraft", "engineer", "mine"].includes(defender)
+      ? "defender"
+      : "attacker";
+  if (defender === "tank")
+    return ["general", "lieutenant-general", "major-general", "aircraft", "engineer", "mine"].includes(attacker)
+      ? "attacker"
+      : "defender";
   if (attacker === "engineer") return ["mine", "spy", "tank"].includes(defender) ? "attacker" : "defender";
   if (defender === "engineer") return ["mine", "spy", "tank"].includes(attacker) ? "defender" : "attacker";
   const attack = RANK.indexOf(attacker);

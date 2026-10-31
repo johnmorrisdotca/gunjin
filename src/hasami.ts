@@ -68,11 +68,7 @@ export function submitHasamiSetup(
  * console.log(playHasamiMove(ready,0,action).phase);
  * ```
  */
-export function playHasamiMove(
-  match: ReturnType<typeof createMatch>,
-  player: Player,
-  action: MoveAction,
-) {
+export function playHasamiMove(match: ReturnType<typeof createMatch>, player: Player, action: MoveAction) {
   requireMode(match, "hidden-hasami");
   return playMove(match, player, action);
 }

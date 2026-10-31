@@ -27,16 +27,14 @@ export function publicReplay(match: AuthoritativeMatch): PublicReplay {
     mode: match.mode,
     width: match.width,
     height: match.height,
-    events: match.log.map(event => ({
+    events: match.log.map((event) => ({
       turn: event.turn,
       player: event.player,
       from: event.from ? { ...event.from } : undefined,
       to: event.to ? { ...event.to } : undefined,
-      capturedCells: event.capturedCells.map(cell => ({ ...cell })),
+      capturedCells: event.capturedCells.map((cell) => ({ ...cell })),
       capturedCount: event.capturedCount,
-      revealed: match.mode === "stratego-lite"
-        ? event.revealed?.map(piece => ({ ...piece }))
-        : undefined,
+      revealed: match.mode === "stratego-lite" ? event.revealed?.map((piece) => ({ ...piece })) : undefined,
       outcome: event.outcome ? { ...event.outcome } : undefined,
     })),
     result: match.result ? { ...match.result } : undefined,
@@ -107,12 +105,14 @@ export function decodePublicReplay(code: string): PublicReplay | null {
     let previousTurn = 0;
     for (const event of value.events) {
       if (
-        !Number.isInteger(event.turn) || event.turn <= previousTurn ||
+        !Number.isInteger(event.turn) ||
+        event.turn <= previousTurn ||
         (event.player !== 0 && event.player !== 1) ||
         !Array.isArray(event.capturedCells) ||
         event.capturedCells.some((cell: unknown) => !isCoordinate(cell, value.width, value.height)) ||
         !Number.isInteger(event.capturedCount) ||
-        event.capturedCount < 0 || event.capturedCount !== event.capturedCells.length ||
+        event.capturedCount < 0 ||
+        event.capturedCount !== event.capturedCells.length ||
         !isCoordinate(event.from, value.width, value.height) ||
         !isCoordinate(event.to, value.width, value.height) ||
         (event.outcome !== undefined && !isResult(event.outcome))
@@ -127,14 +127,16 @@ export function decodePublicReplay(code: string): PublicReplay | null {
         to: { x: event.to.x, y: event.to.y },
         capturedCells: event.capturedCells.map((cell: { x: number; y: number }) => ({ x: cell.x, y: cell.y })),
         capturedCount: event.capturedCount,
-        revealed: value.mode === "stratego-lite" && Array.isArray((event as { revealed?: unknown }).revealed)
-          ? ((event as { revealed?: unknown }).revealed as unknown[])
-            .filter(isRevealedRank)
-            .map(({ owner, kind }) => ({ owner, kind }))
-          : undefined,
-        outcome: event.outcome && isResult(event.outcome)
-          ? { winner: event.outcome.winner, reason: event.outcome.reason }
-          : undefined,
+        revealed:
+          value.mode === "stratego-lite" && Array.isArray((event as { revealed?: unknown }).revealed)
+            ? ((event as { revealed?: unknown }).revealed as unknown[])
+                .filter(isRevealedRank)
+                .map(({ owner, kind }) => ({ owner, kind }))
+            : undefined,
+        outcome:
+          event.outcome && isResult(event.outcome)
+            ? { winner: event.outcome.winner, reason: event.outcome.reason }
+            : undefined,
       });
     }
     if (value.result !== undefined && !isResult(value.result)) return null;
@@ -144,9 +146,10 @@ export function decodePublicReplay(code: string): PublicReplay | null {
       width: value.width,
       height: value.height,
       events,
-      result: value.result && isResult(value.result)
-        ? { winner: value.result.winner, reason: value.result.reason }
-        : undefined,
+      result:
+        value.result && isResult(value.result)
+          ? { winner: value.result.winner, reason: value.result.reason }
+          : undefined,
     };
   } catch {
     return null;
@@ -160,17 +163,34 @@ function isRevealedRank(value: unknown): value is { owner: 0 | 1; kind: string }
 }
 
 function isCoordinate(value: unknown, width: number, height: number): value is { x: number; y: number } {
-  return Boolean(value) && typeof value === "object" &&
+  return (
+    Boolean(value) &&
+    typeof value === "object" &&
     Number.isInteger((value as { x?: unknown }).x) &&
     Number.isInteger((value as { y?: unknown }).y) &&
-    (value as { x: number }).x >= 0 && (value as { x: number }).x < width &&
-    (value as { y: number }).y >= 0 && (value as { y: number }).y < height;
+    (value as { x: number }).x >= 0 &&
+    (value as { x: number }).x < width &&
+    (value as { y: number }).y >= 0 &&
+    (value as { y: number }).y < height
+  );
 }
 
 function isResult(value: unknown): value is MatchResult {
   if (!value || typeof value !== "object") return false;
   const result = value as { winner?: unknown; reason?: unknown };
-  const reasons = ["objective-captured", "capture-threshold", "blocked", "flag-won", "flag-held", "resigned", "agreed-draw", "repetition"];
-  return (result.winner === 0 || result.winner === 1 || result.winner === null) &&
-    typeof result.reason === "string" && reasons.includes(result.reason);
+  const reasons = [
+    "objective-captured",
+    "capture-threshold",
+    "blocked",
+    "flag-won",
+    "flag-held",
+    "resigned",
+    "agreed-draw",
+    "repetition",
+  ];
+  return (
+    (result.winner === 0 || result.winner === 1 || result.winner === null) &&
+    typeof result.reason === "string" &&
+    reasons.includes(result.reason)
+  );
 }

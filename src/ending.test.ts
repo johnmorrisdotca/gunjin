@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
 import * as gunjinShogiEntry from "./gunjin-shogi.ts";
 import * as strategoLiteEntry from "./stratego-lite.ts";
-import { acceptDraw, acknowledgePass, createMatch, declineDraw, offerDraw, playMove, resignMatch, rosterForSetup, submitSetup } from "./stratego-lite.ts";
+import {
+  acceptDraw,
+  acknowledgePass,
+  createMatch,
+  declineDraw,
+  offerDraw,
+  playMove,
+  resignMatch,
+  rosterForSetup,
+  submitSetup,
+} from "./stratego-lite.ts";
 import { decodePublicReplay, encodePublicReplay } from "./replay.ts";
 import { decodeTrustedMatch, encodeTrustedMatch } from "./trusted.ts";
 import { publicPosition, viewForPlayer } from "./views.ts";
@@ -12,10 +22,16 @@ const range = (from: number, count: number) => Array.from({ length: count }, (_,
 /** Each side's setup as the cells (row-major) its roster is dealt into, in order: red takes the bottom rows, blue the top. */
 const SETUP_CELLS: Record<GameMode, readonly [readonly number[], readonly number[]]> = {
   "hidden-hasami": [range(42, 7), range(0, 7)],
-  "luzhanqi-mini": [[42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 50], [7, 8, 9, 10, 11, 12, 13, 0, 2, 3, 4, 5, 6, 1]],
+  "luzhanqi-mini": [
+    [42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 50],
+    [7, 8, 9, 10, 11, 12, 13, 0, 2, 3, 4, 5, 6, 1],
+  ],
   salpakan: [range(51, 21), range(0, 21)],
   "stratego-lite": [range(60, 40), range(0, 40)],
-  "gunjin-shogi": [[...range(45, 30), 75], [...range(0, 30), 31]],
+  "gunjin-shogi": [
+    [...range(45, 30), 75],
+    [...range(0, 30), 31],
+  ],
 };
 
 /** A match in play, for any mode: both sides arranged, and red to move. */
@@ -60,7 +76,10 @@ describe("resigning", () => {
       expect(ended.phase, mode).toBe("finished");
       expect(ended.result, mode).toEqual({ winner: 1, reason: "resigned" });
       expect(JSON.stringify(match), mode).toBe(before);
-      expect(() => playMove(ended, 0, { from: { x: 0, y: 0 }, to: { x: 0, y: 1 }, expectedTurn: ended.turn }), mode).toThrow(RangeError);
+      expect(
+        () => playMove(ended, 0, { from: { x: 0, y: 0 }, to: { x: 0, y: 1 }, expectedTurn: ended.turn }),
+        mode,
+      ).toThrow(RangeError);
       expect(() => resignMatch(ended, 0, ended.turn), mode).toThrow(RangeError);
     }
   });
@@ -96,7 +115,9 @@ describe("offering, accepting and declining a draw", () => {
       expect(offered.currentPlayer, mode).toBe(1);
       expect(offered.drawOffer, mode).toBe(0);
       expect(viewForPlayer(offered, 1).pieces, `${mode}: the board stays covered`).toBeNull();
-      expect(() => acceptDraw(offered, 1, offered.turn), `${mode}: not before the device has arrived`).toThrow(RangeError);
+      expect(() => acceptDraw(offered, 1, offered.turn), `${mode}: not before the device has arrived`).toThrow(
+        RangeError,
+      );
 
       const arrived = acknowledgePass(offered, 1, offered.turn);
       expect(arrived.phase, mode).toBe("play");

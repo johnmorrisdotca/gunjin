@@ -14,7 +14,10 @@ const range = (from, count) => Array.from({ length: count }, (_, at) => from + a
 const GAMES = {
   "hidden-hasami-7": { first: range(42, 7), second: range(0, 7) },
   "hidden-hasami-9": { first: range(72, 9), second: range(0, 9) },
-  "luzhanqi-mini": { first: [42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 50], second: [7, 8, 9, 10, 11, 12, 13, 0, 2, 3, 4, 5, 6, 1] },
+  "luzhanqi-mini": {
+    first: [42, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 50],
+    second: [7, 8, 9, 10, 11, 12, 13, 0, 2, 3, 4, 5, 6, 1],
+  },
   salpakan: { first: range(51, 21), second: range(0, 21) },
   "stratego-lite": { first: range(60, 40), second: range(0, 40) },
   "gunjin-shogi": { first: [...range(45, 30), 75], second: [...range(0, 30), 31] },
@@ -71,7 +74,10 @@ await takePictures({
           await page.waitForSelector(".gj-cell");
         }
         await play(page, "hidden-hasami", 7);
-        if (view === "phone") await page.locator(".gj-root").evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
+        if (view === "phone")
+          await page
+            .locator(".gj-root")
+            .evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
         else await page.evaluate(() => window.scrollTo(0, 0));
       },
     },

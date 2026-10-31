@@ -55,7 +55,15 @@ export type PassPurpose = "setup" | "play" | "draw";
  */
 export type MatchResult = {
   winner: Player | null;
-  reason: "objective-captured" | "capture-threshold" | "blocked" | "flag-won" | "flag-held" | "resigned" | "agreed-draw" | "repetition";
+  reason:
+    | "objective-captured"
+    | "capture-threshold"
+    | "blocked"
+    | "flag-won"
+    | "flag-held"
+    | "resigned"
+    | "agreed-draw"
+    | "repetition";
 };
 
 /** Role-free event record, with rank details only when that mode publishes them. */

@@ -4,11 +4,18 @@ import type { ModeRules, MoveResolution, SetupPiece } from "./types.ts";
 
 const ROSTER = [
   "commander",
-  "officer", "officer",
-  "soldier", "soldier", "soldier",
-  "engineer", "engineer", "engineer",
-  "bomb", "bomb",
-  "mine", "mine",
+  "officer",
+  "officer",
+  "soldier",
+  "soldier",
+  "soldier",
+  "engineer",
+  "engineer",
+  "engineer",
+  "bomb",
+  "bomb",
+  "mine",
+  "mine",
   "flag",
 ];
 const CAMPS = new Set(["1:3", "5:3", "1:4", "5:4"]);
@@ -34,10 +41,7 @@ export function isHeadquarters(coordinate: Coordinate): boolean {
   return HEADQUARTERS.has(`${coordinate.x}:${coordinate.y}`);
 }
 
-function validateSetup(
-  player: Player,
-  placements: readonly SetupPiece[],
-): boolean {
+function validateSetup(player: Player, placements: readonly SetupPiece[]): boolean {
   if (placements.length !== ROSTER.length) return false;
   const homeRow = player === 0 ? 7 : 0;
   const frontRow = player === 0 ? 6 : 1;
@@ -48,8 +52,11 @@ function validateSetup(
 
   for (const piece of placements) {
     if (
-      !Number.isInteger(piece.x) || piece.x < 0 || piece.x > 6 ||
-      !Number.isInteger(piece.y) || !allowedRows.has(piece.y) ||
+      !Number.isInteger(piece.x) ||
+      piece.x < 0 ||
+      piece.x > 6 ||
+      !Number.isInteger(piece.y) ||
+      !allowedRows.has(piece.y) ||
       isCamp(piece)
     ) {
       return false;
@@ -64,28 +71,19 @@ function validateSetup(
   }
 
   if (!flagInHeadquarters) return false;
-  return [...new Set(ROSTER)].every(kind =>
-    counts.get(kind) === ROSTER.filter(role => role === kind).length,
-  );
+  return [...new Set(ROSTER)].every((kind) => counts.get(kind) === ROSTER.filter((role) => role === kind).length);
 }
 
-function legalDestinations(
-  match: AuthoritativeMatch,
-  piece: Piece,
-): Coordinate[] {
+function legalDestinations(match: AuthoritativeMatch, piece: Piece): Coordinate[] {
   if (piece.kind === "mine" || piece.kind === "flag") return [];
-  return orthogonalNeighbors(piece, match.width, match.height).filter(destination => {
+  return orthogonalNeighbors(piece, match.width, match.height).filter((destination) => {
     const occupant = pieceAt(match.pieces, destination);
     if (!occupant) return true;
     return occupant.owner !== piece.owner && !isCamp(destination);
   });
 }
 
-function resolveMove(
-  match: AuthoritativeMatch,
-  attacker: Piece,
-  destination: Coordinate,
-): MoveResolution {
+function resolveMove(match: AuthoritativeMatch, attacker: Piece, destination: Coordinate): MoveResolution {
   const defender = pieceAt(match.pieces, destination);
   if (defender?.owner === attacker.owner) throw new RangeError("A friendly piece blocks that square");
   if (defender && isCamp(destination)) throw new RangeError("A camp cannot be attacked");
@@ -100,7 +98,7 @@ function resolveMove(
 
   if (defender.kind === "flag") {
     const pieces = movePiece(
-      match.pieces.filter(piece => piece.id !== defender.id),
+      match.pieces.filter((piece) => piece.id !== defender.id),
       attacker,
       destination,
     );
@@ -114,7 +112,7 @@ function resolveMove(
   }
   if (attacker.kind === "bomb" || defender.kind === "bomb") {
     return {
-      pieces: match.pieces.filter(piece => piece.id !== attacker.id && piece.id !== defender.id),
+      pieces: match.pieces.filter((piece) => piece.id !== attacker.id && piece.id !== defender.id),
       captured: [attacker, defender],
     };
   }
@@ -122,7 +120,7 @@ function resolveMove(
     if (attacker.kind === "engineer") {
       return {
         pieces: movePiece(
-          match.pieces.filter(piece => piece.id !== defender.id),
+          match.pieces.filter((piece) => piece.id !== defender.id),
           attacker,
           destination,
         ),
@@ -131,7 +129,7 @@ function resolveMove(
       };
     }
     return {
-      pieces: match.pieces.filter(piece => piece.id !== attacker.id),
+      pieces: match.pieces.filter((piece) => piece.id !== attacker.id),
       captured: [attacker],
     };
   }
@@ -140,14 +138,14 @@ function resolveMove(
   const defenderRank = combatRank(defender.kind);
   if (attackerRank === defenderRank) {
     return {
-      pieces: match.pieces.filter(piece => piece.id !== attacker.id && piece.id !== defender.id),
+      pieces: match.pieces.filter((piece) => piece.id !== attacker.id && piece.id !== defender.id),
       captured: [attacker, defender],
     };
   }
   if (attackerRank > defenderRank) {
     return {
       pieces: movePiece(
-        match.pieces.filter(piece => piece.id !== defender.id),
+        match.pieces.filter((piece) => piece.id !== defender.id),
         attacker,
         destination,
       ),
@@ -156,12 +154,13 @@ function resolveMove(
     };
   }
   return {
-    pieces: match.pieces.filter(piece => piece.id !== attacker.id),
+    pieces: match.pieces.filter((piece) => piece.id !== attacker.id),
     captured: [attacker],
   };
 }
 
 function combatRank(kind: string): number {
-  return { engineer: 1, soldier: 2, officer: 3, commander: 4 }[kind as
-    "engineer" | "soldier" | "officer" | "commander"] ?? 0;
+  return (
+    { engineer: 1, soldier: 2, officer: 3, commander: 4 }[kind as "engineer" | "soldier" | "officer" | "commander"] ?? 0
+  );
 }

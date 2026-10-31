@@ -81,11 +81,7 @@ export function submitSalpakanSetup(
  * console.log(playSalpakanMove(salReady,0,salAction).phase);
  * ```
  */
-export function playSalpakanMove(
-  match: ReturnType<typeof createMatch>,
-  player: Player,
-  action: MoveAction,
-) {
+export function playSalpakanMove(match: ReturnType<typeof createMatch>, player: Player, action: MoveAction) {
   requireMode(match);
   return playMove(match, player, action);
 }

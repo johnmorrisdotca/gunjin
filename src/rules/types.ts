@@ -23,9 +23,5 @@ export type ModeRules = {
   roster: (player: Player, width: number, height: number) => readonly string[];
   validateSetup: (player: Player, placements: readonly SetupPiece[]) => boolean;
   legalDestinations: (match: AuthoritativeMatch, piece: Piece) => readonly Coordinate[];
-  resolveMove: (
-    match: AuthoritativeMatch,
-    piece: Piece,
-    destination: Coordinate,
-  ) => MoveResolution;
+  resolveMove: (match: AuthoritativeMatch, piece: Piece, destination: Coordinate) => MoveResolution;
 };

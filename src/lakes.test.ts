@@ -6,7 +6,11 @@ import { boardFeatures, viewForPlayer } from "./views.ts";
 import type { AuthoritativeMatch, GameMode } from "./types.ts";
 
 const PLAYING: Record<GameMode, [number, number]> = {
-  "hidden-hasami": [7, 7], "luzhanqi-mini": [7, 8], salpakan: [9, 8], "stratego-lite": [10, 10], "gunjin-shogi": [9, 9],
+  "hidden-hasami": [7, 7],
+  "luzhanqi-mini": [7, 8],
+  salpakan: [9, 8],
+  "stratego-lite": [10, 10],
+  "gunjin-shogi": [9, 9],
 };
 
 /** A match in play, with the pieces given, on the board the mode is played on. */
@@ -19,7 +23,9 @@ describe("Hidden Capture Flag's lakes", () => {
   it("are two 2x2 lakes at files 2-3 and 6-7, ranks 4-5, and only in this mode", () => {
     const lakes = boardFeatures("stratego-lite", 10, 10).lakes;
     expect(lakes).toHaveLength(8);
-    expect(new Set(lakes.map(({ x, y }) => `${x}:${y}`))).toEqual(new Set(["2:4", "3:4", "2:5", "3:5", "6:4", "7:4", "6:5", "7:5"]));
+    expect(new Set(lakes.map(({ x, y }) => `${x}:${y}`))).toEqual(
+      new Set(["2:4", "3:4", "2:5", "3:5", "6:4", "7:4", "6:5", "7:5"]),
+    );
     for (const mode of ["hidden-hasami", "luzhanqi-mini", "salpakan", "gunjin-shogi"] as const) {
       const [width, height] = PLAYING[mode];
       expect(boardFeatures(mode, width, height).lakes, mode).toEqual([]);
@@ -33,7 +39,10 @@ describe("Hidden Capture Flag's lakes", () => {
         const lake = drawn.has(`${x}:${y}`);
         const into = { id: "m", owner: 0 as const, kind: "marshal", x: x === 9 ? 8 : x + 1, y };
         const moves = STRATEGO_LITE_RULES.legalDestinations(playingWith("stratego-lite", [into]), into);
-        expect(moves.some(move => move.x === x && move.y === y), `${x}:${y}`).toBe(!lake);
+        expect(
+          moves.some((move) => move.x === x && move.y === y),
+          `${x}:${y}`,
+        ).toBe(!lake);
       }
     }
   });

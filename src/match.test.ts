@@ -14,14 +14,23 @@ describe("match handoff and public information", () => {
       expect(decodeTrustedMatch(encodeTrustedMatch(match))).toEqual(match);
 
       const makeSetup = (player: 0 | 1) => {
-        const rows = mode === "stratego-lite"
-          ? (player === 0 ? [6, 7, 8, 9] : [0, 1, 2, 3])
-          : (player === 0 ? [5, 6, 7, 8] : [0, 1, 2, 3]);
+        const rows =
+          mode === "stratego-lite"
+            ? player === 0
+              ? [6, 7, 8, 9]
+              : [0, 1, 2, 3]
+            : player === 0
+              ? [5, 6, 7, 8]
+              : [0, 1, 2, 3];
         const placements: { x: number; y: number; kind: string }[] = [];
         for (const kind of rosterForSetup(match, player)) {
-          const cell = rows.flatMap(y => Array.from({ length: match.width }, (_, x) => ({ x, y })))
-            .find(({ x, y }) => !placements.some(piece => piece.x === x && piece.y === y) &&
-              !(mode === "gunjin-shogi" && kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${x}:${y}`)));
+          const cell = rows
+            .flatMap((y) => Array.from({ length: match.width }, (_, x) => ({ x, y })))
+            .find(
+              ({ x, y }) =>
+                !placements.some((piece) => piece.x === x && piece.y === y) &&
+                !(mode === "gunjin-shogi" && kind === "mine" && ["3:5", "5:5", "3:3", "5:3"].includes(`${x}:${y}`)),
+            );
           if (!cell) throw new Error("The test setup has no remaining home cell");
           placements.push({ ...cell, kind });
         }
@@ -48,12 +57,17 @@ describe("match handoff and public information", () => {
     expect(viewForPlayer(match, 0).pieces).toBeNull();
     expect(viewForPlayer(match, 1).ownSetup).toBeNull();
     match = acknowledgePass(match, 1, match.turn);
-    match = submitSetup(match, 1, setup(1).map(cell => ({ ...cell, y: 0 })), match.setupStep);
+    match = submitSetup(
+      match,
+      1,
+      setup(1).map((cell) => ({ ...cell, y: 0 })),
+      match.setupStep,
+    );
     match = acknowledgePass(match, 0, match.turn);
 
-    const bluePiece = match.pieces.find(piece => piece.owner === 1)!;
+    const bluePiece = match.pieces.find((piece) => piece.owner === 1)!;
     const view = viewForPlayer(match, 0);
-    const visibleEnemy = view.pieces!.find(piece => piece.owner === 1)!;
+    const visibleEnemy = view.pieces!.find((piece) => piece.owner === 1)!;
     expect(visibleEnemy).toEqual({ owner: 1, x: bluePiece.x, y: bluePiece.y, kind: null, hidden: true });
     expect("kind" in visibleEnemy ? visibleEnemy.kind : undefined).toBeNull();
     expect("id" in visibleEnemy).toBe(false);
@@ -83,7 +97,10 @@ describe("match handoff and public information", () => {
   });
 
   it("keeps Gunjin Shogi combat identities private while exposing Capture Flag battles", () => {
-    const makeState = (mode: AuthoritativeMatch["mode"], revealed?: { owner: 0 | 1; kind: string }[]): AuthoritativeMatch => ({
+    const makeState = (
+      mode: AuthoritativeMatch["mode"],
+      revealed?: { owner: 0 | 1; kind: string }[],
+    ): AuthoritativeMatch => ({
       mode,
       width: 10,
       height: 10,
@@ -97,22 +114,30 @@ describe("match handoff and public information", () => {
         { id: "enemy", owner: 1, kind: "marshal", x: 2, y: 3 },
       ],
       positionCounts: {},
-      log: [{
-        turn: 1,
-        player: 0,
-        from: { x: 2, y: 2 },
-        to: { x: 2, y: 3 },
-        capturedCells: [{ x: 2, y: 3 }],
-        capturedCount: 1,
-        revealed,
-      }],
+      log: [
+        {
+          turn: 1,
+          player: 0,
+          from: { x: 2, y: 2 },
+          to: { x: 2, y: 3 },
+          capturedCells: [{ x: 2, y: 3 }],
+          capturedCount: 1,
+          revealed,
+        },
+      ],
     });
 
-    const shogi = makeState("gunjin-shogi", [{ owner: 0, kind: "spy" }, { owner: 1, kind: "general" }]);
+    const shogi = makeState("gunjin-shogi", [
+      { owner: 0, kind: "spy" },
+      { owner: 1, kind: "general" },
+    ]);
     expect(viewForPlayer(shogi, 0).publicLog[0]?.revealed).toBeUndefined();
     expect(JSON.stringify(publicPosition(shogi))).not.toContain("marshal");
 
-    const captureFlag = makeState("stratego-lite", [{ owner: 0, kind: "scout" }, { owner: 1, kind: "marshal" }]);
+    const captureFlag = makeState("stratego-lite", [
+      { owner: 0, kind: "scout" },
+      { owner: 1, kind: "marshal" },
+    ]);
     expect(viewForPlayer(captureFlag, 0).publicLog[0]?.revealed).toEqual([
       { owner: 0, kind: "scout" },
       { owner: 1, kind: "marshal" },
