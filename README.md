@@ -1,3 +1,5 @@
+<p align="center"><a href="https://johnmorrisdotca.github.io/gunjin/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/thumbnail-dark.png"><img src="https://raw.githubusercontent.com/johnmorrisdotca/gunjin/main/docs/images/thumbnail.png" alt="Gunjin: three boards seen from one side, Gunjin Shogi, Hidden Capture Flag with its lakes and Salpakan, the other side's ranks hidden." width="1200"></picture></a></p>
+
 <h1 align="center">Gunjin <sub>軍人</sub> — Hidden-rank strategy games</h1>
 
 <p align="center"><strong>Five hidden-rank strategy games, played face to face on one device.</strong><br>

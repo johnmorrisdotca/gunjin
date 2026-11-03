@@ -121,4 +121,45 @@ await takePictures({
       },
     },
   ],
+  // The family's thumbnail, dark thumbnail and icon (scripts/family-thumbnail.mjs): three of the boards the page draws,
+  // each from the first side's seat (its own ranks shown, the other side's hidden), in the three materials and both
+  // piece styles; the icon is a corner of the Gunjin Shogi board in a frame of its own, the two sides facing each
+  // other, without the rank letters.
+  thumbnail: {
+    ready: ".gj-cell",
+    target: "#thumbnail-stage",
+    icon: { target: "#thumbnail-icon" },
+    label: "Gunjin 軍人",
+    async prepare(page) {
+      const boards = [];
+      for (const [mode, material, style] of [
+        ["gunjin-shogi", "ivory", "ink"],
+        ["stratego-lite", "wood", "ink"],
+        ["salpakan", "slate", "tiles"],
+      ]) {
+        await page.locator("#material").selectOption(material);
+        await page.locator("#piece-style").selectOption(style);
+        await play(page, mode);
+        boards.push(
+          await page
+            .locator(".gj-board svg")
+            .first()
+            .evaluate((svg) => svg.outerHTML),
+        );
+      }
+      await page.evaluate((drawn) => {
+        const stage = `<div id="thumbnail-stage" style="display:flex;gap:28px;align-items:center;padding:8px;width:max-content">${drawn.map((svg) => `<div style="width:380px">${svg}</div>`).join("")}</div>`;
+        const corner = new DOMParser().parseFromString(drawn[0], "image/svg+xml").documentElement;
+        corner.setAttribute("viewBox", "-1 155 158 158");
+        for (const text of corner.querySelectorAll('g[data-hidden="false"] text')) text.remove();
+        const frame = corner.lastElementChild.cloneNode();
+        for (const [name, value] of Object.entries({ x: 0, y: 156, width: 156, height: 156 }))
+          frame.setAttribute(name, value);
+        corner.append(frame);
+        const icon = `<div id="thumbnail-icon" style="width:420px;padding:8px">${corner.outerHTML}</div>`;
+        document.body.replaceChildren();
+        document.body.insertAdjacentHTML("beforeend", stage + icon);
+      }, boards);
+    },
+  },
 });

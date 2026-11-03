@@ -4,8 +4,11 @@
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { API_CSS, apiPage } from "./api.mjs";
 import { FAMILY_SCRIPT, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
+import { publishThumbnails, thumbnailHead } from "./family-thumbnail.mjs";
 
 const id = "gunjin";
+const ALT =
+  "Gunjin: three boards seen from one side, Gunjin Shogi, Hidden Capture Flag with its lakes and Salpakan, the other side's ranks hidden.";
 const icon =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f5d4a'/%3E%3Ctext x='50' y='70' font-size='42' text-anchor='middle' fill='%23f3efe4'%3E軍人%3C/text%3E%3C/svg%3E";
 rmSync("site", { recursive: true, force: true });
@@ -25,6 +28,7 @@ const page = readFileSync("demo/index.html", "utf8")
       ogDescription: "Five hidden-rank strategy games for two people sharing one device.",
     }),
   )
+  .replace("<!--family-thumbnail-->", thumbnailHead(JSON.parse(readFileSync("package.json", "utf8")), { alt: ALT }))
   .replace(
     "<!--family-header-->",
     familyHeader({
@@ -40,6 +44,8 @@ const page = readFileSync("demo/index.html", "utf8")
   .replace("<!--family-unreviewed-->", familyUnreviewed({ id }))
   .replace("<!--family-script-->", `<script>${FAMILY_SCRIPT}</script>`);
 writeFileSync("site/index.html", page);
+// The family's card, dark card and icon, at <site>/thumbnail.png, thumbnail-dark.png and icon.png.
+publishThumbnails(".", "site");
 writeFileSync("site/api.css", API_CSS);
 writeFileSync("site/api.html", apiPage({ id, name: "Gunjin", icon }));
 console.log("site/ is ready to preview or publish.");
